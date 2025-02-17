@@ -135,9 +135,19 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			);
 		}
 
+		/**
+		 * Filter whether the server should prevent uploads for image types it doesn't support. Default true.
+		 * 
+		 * Developers can use this filter to enable uploads of certain image types.
+		 * 
+		 * @param bool $check_mime Whether to prevent uploads of unsupported image types.
+		 */
+		$prevent_unsupported_uploads = apply_filters( 'wp_prevent_unsupported_image_uploads', true );
+
 		// If the upload is an image, check if the server can handle the mime type.
 		$files = $request->get_file_params();
 		if (
+			$prevent_unsupported_uploads &&
 			isset( $files['file']['type'] ) &&
 			str_starts_with( $files['file']['type'], 'image/' )
 		) {

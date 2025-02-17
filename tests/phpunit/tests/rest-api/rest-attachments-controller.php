@@ -2563,7 +2563,7 @@ class WP_Test_REST_Attachments_Controller extends WP_Test_REST_Post_Type_Control
 	 */
 	public function test_upload_unsupported_image_type() {
 
-		// Only run this tst when the editor doesn't support AVIF.
+		// Only run this test when the editor doesn't support AVIF.
 		if ( wp_image_editor_supports( array( 'AVIF' ) ) ) {
 			$this->markTestSkipped( 'The image editor suppports AVIF.' );
 		}
@@ -2577,5 +2577,30 @@ class WP_Test_REST_Attachments_Controller extends WP_Test_REST_Post_Type_Control
 		$response = rest_get_server()->dispatch( $request );
 
 		$this->assertErrorResponse( 'rest_upload_image_type_not_supported', $response, 400 );
+	}
+
+	/**
+	 * Test that the `wp_prevent_unsupported_image_uploads` filter enables uploading of unsupported image types.
+	 * 
+	 * @ticket 61167
+	 */
+	public function test_upload_unsupported_image_type_with_filter() {
+		
+		// Only run this test when the editor doesn't support AVIF.
+		if ( wp_image_editor_supports( array( 'AVIF' ) ) ) {
+			$this->markTestSkipped( 'The image editor suppports AVIF.' );
+		}
+
+		add_filter( 'wp_prevent_unsupported_image_uploads', '__return_false' );
+
+		$request = new WP_REST_Request( 'POST', '/wp/v2/media' );
+
+		wp_set_current_user( self::$author_id );
+		$request->set_header( 'Content-Type', 'image/avif' );
+		$request->set_header( 'Content-Disposition', 'attachment; filename=avif-lossy.avif' );
+		$request->set_body( file_get_contents( self::$test_avif_file ) );
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertSame( 201, $response->get_status() );
 	}
 }
