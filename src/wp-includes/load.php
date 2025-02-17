@@ -688,11 +688,11 @@ function get_valid_error_constants() {
 /**
  * Check if the given error level is valid.
  *
+ * @since 6.8.0
+ 
  * @param int $level Error reporting level to check.
  *
  * @return bool True if valid, false otherwise.
- *
- * @since 6.8.0
  */
 function is_valid_error_level( $level ) {
 
