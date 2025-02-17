@@ -32,13 +32,13 @@
 
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<a class="screen-reader-text skip-link" href="#content">
-	<?php
-	/* translators: Hidden accessibility text. */
-	_e( 'Skip to content', 'twentyfourteen' );
-	?>
-</a>
 <div id="page" class="hfeed site">
+	<a class="screen-reader-text skip-link" href="#content">
+		<?php
+		/* translators: Hidden accessibility text. */
+		_e( 'Skip to content', 'twentyfourteen' );
+		?>
+	</a>
 	<?php if ( get_header_image() ) : ?>
 	<div id="site-header">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
