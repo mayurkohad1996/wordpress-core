@@ -146,7 +146,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 			if ( ! wp_image_editor_supports( array( 'mime_type' => $files['file']['type'] ) ) ) {
 				return new WP_Error(
 					'rest_upload_image_type_not_supported',
-					__( 'The web server cannot generate responsive image sizes for this image. Convert it to JPEG or PNG before uploading.', 'gutenberg' ),
+					__( 'The web server cannot generate responsive image sizes for this image. Convert it to JPEG or PNG before uploading.' ),
 					array( 'status' => 400 )
 				);
 			}
