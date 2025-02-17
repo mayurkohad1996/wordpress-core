@@ -138,8 +138,7 @@ class WP_REST_Attachments_Controller extends WP_REST_Posts_Controller {
 		// If the upload is an image, check if the server can handle the mime type.
 		$files = $request->get_file_params();
 		if (
-			! empty( $files ) &&
-			isset( $files['file'] ) &&
+			isset( $files['file']['type'] ) &&
 			str_starts_with( $files['file']['type'], 'image/' )
 		) {
 			// Check if the image editor supports the type.
