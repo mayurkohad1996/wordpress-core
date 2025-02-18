@@ -384,7 +384,7 @@ function wp_get_api_hostname() {
 	static $current_hostname = '';
 
 	if ( defined( 'WP_RUN_CORE_TESTS' ) || '' === $current_hostname ) {
-		$current_hostname = 'api.wordpress.org';
+		$current_hostname = 'https://api.wordpress.org';
 
 		// Check if the environment variable has been set, if `getenv` is available on the system.
 		if ( function_exists( 'getenv' ) ) {
