@@ -278,7 +278,7 @@ class WP_Debug_Data {
 			'value' => wp_get_api_hostname(),
 		);
 
-		$wp_dotorg = wp_remote_get( wp_get_api_hostname() , array( 'timeout' => 10 ) );
+		$wp_dotorg = wp_remote_get( wp_get_api_hostname(), array( 'timeout' => 10 ) );
 
 		if ( ! is_wp_error( $wp_dotorg ) ) {
 			$fields['dotorg_communication'] = array(
