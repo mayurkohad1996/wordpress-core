@@ -616,6 +616,8 @@ function wp_debug_mode() {
 			}
 
 			error_reporting( $wp_debug_level );
+		} else {
+		error_reporting( E_ALL );
 		}
 
 		if ( WP_DEBUG_DISPLAY ) {
