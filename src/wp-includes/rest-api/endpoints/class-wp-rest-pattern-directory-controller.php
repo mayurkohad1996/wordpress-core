@@ -11,7 +11,7 @@
  * Controller which provides REST endpoint for block patterns.
  *
  * This simply proxies the endpoint at http://api.wordpress.org/patterns/1.0/. That isn't necessary for
- * functionality, but is desired for privacy. It prevents api.wordpress.org from knowing the user's IP address.
+ * functionality, but is desired for privacy. It prevents the WordPress API from knowing the user's IP address.
  *
  * @since 5.8.0
  *
@@ -114,7 +114,7 @@ class WP_REST_Pattern_Directory_Controller extends WP_REST_Controller {
 		$raw_patterns = get_site_transient( $transient_key );
 
 		if ( ! $raw_patterns ) {
-			$api_url = 'http://api.wordpress.org/patterns/1.0/?' . build_query( $query_args );
+			$api_url = wp_get_api_hostname() . '/patterns/1.0/?' . build_query( $query_args );
 			if ( wp_http_supports( array( 'ssl' ) ) ) {
 				$api_url = set_url_scheme( $api_url, 'https' );
 			}
@@ -180,7 +180,7 @@ class WP_REST_Pattern_Directory_Controller extends WP_REST_Controller {
 	 * @since 5.8.0
 	 * @since 5.9.0 Renamed `$raw_pattern` to `$item` to match parent class for PHP 8 named parameter support.
 	 *
-	 * @param object          $item    Raw pattern from api.wordpress.org, before any changes.
+	 * @param object          $item    Raw pattern from the WordPress API, before any changes.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
 	 */

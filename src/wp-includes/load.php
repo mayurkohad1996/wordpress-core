@@ -371,6 +371,46 @@ function wp_is_development_mode( $mode ) {
 }
 
 /**
+ * Retrieves the current API hostname.
+ *
+ * The API hostname is used in requests for core, plugin, theme, and translation information,
+ * installation and updates.
+ *
+ * @since 6.8.0
+ *
+ * @return string The current API hostname.
+ */
+function wp_get_api_hostname() {
+	static $current_hostname = '';
+
+	if ( defined( 'WP_RUN_CORE_TESTS' ) || '' === $current_hostname ) {
+		$current_hostname = 'api.wordpress.org';
+
+		// Check if the environment variable has been set, if `getenv` is available on the system.
+		if ( function_exists( 'getenv' ) ) {
+			$has_env = getenv( 'WP_API_HOSTNAME' );
+			if ( false !== $has_env ) {
+				$current_hostname = $has_env;
+			}
+		}
+
+		// Fetch the hostname from a constant, this overrides the global system variable.
+		if ( defined( 'WP_API_HOSTNAME' ) && WP_API_HOSTNAME ) {
+			$current_hostname = WP_API_HOSTNAME;
+		}
+	}
+
+	/**
+	 * Filters the API hostname.
+	 *
+	 * @since 6.8.0
+	 *
+	 * @param string $current_hostname The current hostname.
+	 */
+	return apply_filters( 'wp_api_hostname', $current_hostname );
+}
+
+/**
  * Ensures all of WordPress is not loaded when handling a favicon.ico request.
  *
  * Instead, send the headers for a zero-length favicon and bail.
