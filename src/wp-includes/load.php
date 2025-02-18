@@ -657,9 +657,9 @@ function wp_debug_mode() {
 /**
  * Returns all valid error reporting constants.
  *
- * @return array Array of valid error reporting constants.
- *
  * @since 6.8.0
+ *
+ * @return array Array of valid error reporting constants.
  */
 function wp_get_valid_error_constants() {
 	$valid_constants = array();
@@ -688,14 +688,14 @@ function wp_is_valid_error_level( $level ) {
 
 		return false;
 	}
-	// Check if the level is a valid integer and not negative
+	// Check if the level is a valid integer and not negative.
 	if ( ! is_int( $level ) || $level < 0 ) {
 
 		return false;
 	}
 
 	$valid_constants = wp_get_valid_error_constants();
-	// Check if the level is a valid combination of constants
+	// Check if the level is a valid combination of constants.
 	$bitmask = array_reduce(
 		$valid_constants,
 		function ( $carry, $item ) {
