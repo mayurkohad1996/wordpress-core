@@ -3351,6 +3351,10 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 		unset( $cqueries[ $table ], $for_update[ $table ] );
 	}
 
+	foreach ( $vqueries as $view => $qry ) {
+		$vqueries[ $view ] = str_replace( 'CREATE VIEW', 'CREATE OR REPLACE VIEW', $qry );
+	}
+
 	$allqueries = array_merge( $cqueries, $vqueries, $iqueries );
 	if ( $execute ) {
 		foreach ( $allqueries as $query ) {
