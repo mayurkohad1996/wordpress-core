@@ -472,6 +472,7 @@ function drop_tables() {
 	foreach ( $tables as $table ) {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
+		$wpdb->query( "DROP VIEW IF EXISTS {$table}" );
 	}
 }
 

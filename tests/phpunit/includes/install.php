@@ -66,6 +66,8 @@ $wpdb->query( 'SET foreign_key_checks = 0' );
 foreach ( $wpdb->tables() as $table => $prefixed_table ) {
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	$wpdb->query( "DROP TABLE IF EXISTS $prefixed_table" );
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$wpdb->query( "DROP VIEW IF EXISTS $prefixed_table" );
 }
 
 foreach ( $wpdb->tables( 'ms_global' ) as $table => $prefixed_table ) {
