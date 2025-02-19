@@ -564,7 +564,7 @@ function populate_options( array $options = array() ) {
 		'wp_attachment_pages_enabled'     => 0,
 
 		// x.y.z
-		'finished_merging_terms_table'    => 1,
+		'finished_combining_terms_tables' => 1,
 	);
 
 	// 3.3.0

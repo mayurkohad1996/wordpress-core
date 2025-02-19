@@ -4640,7 +4640,7 @@ function wp_term_is_shared( $term_id ) {
  * @return bool Whether the term_taxonomy table is still separate.
  */
 function wp_has_separate_terms_tables(): bool {
-	return ! get_option( 'finished_merging_terms_table' );
+	return ! get_option( 'finished_combining_terms_tables' );
 }
 
 /**

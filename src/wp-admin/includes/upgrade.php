@@ -2501,7 +2501,7 @@ function upgrade_xyz() {
 	);
 
 	// Set the flag.
-	add_option( 'finished_merging_terms_table', '1', '', true );
+	add_option( 'finished_combining_terms_tables', '1', '', true );
 }
 
 /**

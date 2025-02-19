@@ -4057,12 +4057,13 @@ class wpdb {
 	 * @since 4.6.0 Added support for the 'utf8mb4_520' feature.
 	 * @since 6.2.0 Added support for the 'identifier_placeholders' feature.
 	 * @since 6.6.0 The `utf8mb4` feature now always returns true.
+	 * @since x.y.z Added support for the 'combined_terms_tables' feature.
 	 *
 	 * @see wpdb::db_version()
 	 *
 	 * @param string $db_cap The feature to check for. Accepts 'collation', 'group_concat',
 	 *                       'subqueries', 'set_charset', 'utf8mb4', 'utf8mb4_520',
-	 *                       or 'identifier_placeholders'.
+	 *                       'identifier_placeholders', or 'combined_terms_tables'.
 	 * @return bool True when the database feature is supported, false otherwise.
 	 */
 	public function has_cap( $db_cap ) {
@@ -4099,6 +4100,12 @@ class wpdb {
 				/*
 				 * As of WordPress 6.2, wpdb::prepare() supports identifiers via '%i',
 				 * e.g. table/field names.
+				 */
+				return true;
+			case 'combined_terms_tables': // @since x.y.z
+				/*
+				 * As of WordPress x.y.z, the `terms` and `term_taxonomy` tables are combined
+				 * into the `terms` table.
 				 */
 				return true;
 		}
