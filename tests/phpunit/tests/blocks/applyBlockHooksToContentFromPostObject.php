@@ -133,12 +133,13 @@ class Tests_Blocks_ApplyBlockHooksToContentFromPostObject extends WP_UnitTestCas
 	/**
 	 * @ticket 62716
 	 */
-	public function test_apply_block_hooks_to_content_from_post_object_preserves_non_block_content() {
-		$actual = apply_block_hooks_to_content_from_post_object(
+	public function test_apply_block_hooks_to_content_from_post_object_inserts_hooked_block_if_content_contains_no_blocks() {
+		$expected = '<!-- wp:tests/hooked-block-first-child /-->' . self::$post_with_non_block_content->post_content;
+		$actual   = apply_block_hooks_to_content_from_post_object(
 			self::$post_with_non_block_content->post_content,
 			self::$post_with_non_block_content,
 			'insert_hooked_blocks'
 		);
-		$this->assertSame( self::$post_with_non_block_content->post_content, $actual );
+		$this->assertSame( $expected, $actual );
 	}
 }
