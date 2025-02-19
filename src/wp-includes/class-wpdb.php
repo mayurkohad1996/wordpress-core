@@ -427,6 +427,7 @@ class wpdb {
 	 * WordPress Term Taxonomy table.
 	 *
 	 * @since 2.3.0
+	 * @since x.y.z This table no longer exists and points to a view instead.
 	 *
 	 * @var string
 	 */
@@ -3833,8 +3834,10 @@ class wpdb {
 				. '|(?:RENAME|OPTIMIZE|BACKUP|RESTORE|CHECK|CHECKSUM|ANALYZE|REPAIR).*\s+TABLE'
 				. '|TRUNCATE(?:\s+TABLE)?'
 				. '|CREATE(?:\s+TEMPORARY)?\s+TABLE(?:\s+IF\s+NOT\s+EXISTS)?'
+				. '|CREATE\s+OR\s+REPLACE\s+VIEW'
+				. '|CREATE\s+VIEW'
 				. '|ALTER(?:\s+IGNORE)?\s+TABLE'
-				. '|DROP\s+TABLE(?:\s+IF\s+EXISTS)?'
+				. '|DROP\s+(?:TABLE|VIEW)(?:\s+IF\s+EXISTS)?'
 				. '|CREATE(?:\s+\w+)?\s+INDEX.*\s+ON'
 				. '|DROP\s+INDEX.*\s+ON'
 				. '|LOAD\s+DATA.*INFILE.*INTO\s+TABLE'

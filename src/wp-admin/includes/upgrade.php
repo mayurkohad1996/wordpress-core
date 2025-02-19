@@ -881,6 +881,11 @@ function upgrade_all() {
 	if ( $wp_current_db_version < 58975 ) {
 		upgrade_670();
 	}
+
+	if ( $wp_current_db_version < 60000 ) { // @TODO
+		upgrade_xyz();
+	}
+
 	maybe_disable_link_manager();
 
 	maybe_disable_automattic_widgets();
@@ -2439,6 +2444,64 @@ function upgrade_670() {
 		wp_set_options_autoload( $options, false );
 	}
 }
+
+/**
+ * Executes changes made in WordPress x.y.z.
+ *
+ * @ignore
+ * @since x.y.z
+ *
+ * @global int  $wp_current_db_version The old (current) database version.
+ * @global wpdb $wpdb                  WordPress database abstraction object.
+ */
+function upgrade_xyz() {
+	global $wp_current_db_version, $wpdb;
+
+	if ( $wp_current_db_version >= 60000 ) { // @TODO
+		return;
+	}
+
+	$prefix = $wpdb->get_blog_prefix();
+
+	// Create a new table which combines fields from wp_terms and wp_term_taxonomy.
+	$wpdb->query( "CREATE TABLE {$prefix}new_terms AS SELECT
+			terms.term_id,
+			terms.name,
+			terms.slug,
+			tt.taxonomy,
+			tt.description,
+			tt_parent.term_id AS parent,
+			tt.count,
+			terms.term_group
+		FROM $wpdb->terms AS terms
+		JOIN $wpdb->term_taxonomy AS tt ON tt.term_id = terms.term_id
+		LEFT JOIN $wpdb->term_taxonomy AS tt_parent ON tt_parent.term_taxonomy_id = tt.parent
+	");
+
+	// Atomically put the new table into place.
+	$wpdb->query( "RENAME TABLE $wpdb->terms TO {$prefix}old_terms, {$prefix}new_terms TO $wpdb->terms" );
+
+	// Add indexes to the combined table.
+
+	// Drop the tables that are no longer needed.
+	$wpdb->query( "DROP TABLE $wpdb->term_taxonomy, {$prefix}old_terms" );
+
+	// Create a view for wp_term_taxonomy which selects from the new combined table.
+	$wpdb->query( "CREATE VIEW $wpdb->term_taxonomy
+		AS SELECT
+			term_id AS term_taxonomy_id,
+			term_id,
+			taxonomy,
+			description,
+			parent,
+			count
+		FROM {$wpdb->terms}
+	");
+
+	// Set the flag.
+	add_option( 'finished_merging_terms_table', '1', '', true );
+}
+
 /**
  * Executes network-level upgrade routines.
  *
@@ -2885,6 +2948,7 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 	$queries = apply_filters( 'dbdelta_queries', $queries );
 
 	$cqueries   = array(); // Creation queries.
+	$vqueries   = array(); // View queries.
 	$iqueries   = array(); // Insertion queries.
 	$for_update = array();
 
@@ -2893,6 +2957,12 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 		if ( preg_match( '|CREATE TABLE ([^ ]*)|', $qry, $matches ) ) {
 			$cqueries[ trim( $matches[1], '`' ) ] = $qry;
 			$for_update[ $matches[1] ]            = 'Created table ' . $matches[1];
+			continue;
+		}
+
+		if ( preg_match( '#(CREATE VIEW|CREATE OR REPLACE VIEW) ([^ ]*)#', $qry, $matches ) ) {
+			$vqueries[ trim( $matches[1], '`' ) ] = $qry;
+			$for_update[ $matches[1] ]            = 'Created view ' . $matches[1];
 			continue;
 		}
 
@@ -2922,6 +2992,17 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 	 * @param string[] $cqueries An array of dbDelta create SQL queries.
 	 */
 	$cqueries = apply_filters( 'dbdelta_create_queries', $cqueries );
+
+	/**
+	 * Filters the dbDelta SQL queries for creating views.
+	 *
+	 * Queries filterable via this hook contain "CREATE VIEW" or "CREATE OR REPLACE VIEW".
+	 *
+	 * @since x.y.z
+	 *
+	 * @param string[] $vqueries An array of dbDelta create SQL queries.
+	 */
+	$vqueries = apply_filters( 'dbdelta_view_queries', $vqueries );
 
 	/**
 	 * Filters the dbDelta SQL queries for inserting or updating.
@@ -3274,7 +3355,7 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 		unset( $cqueries[ $table ], $for_update[ $table ] );
 	}
 
-	$allqueries = array_merge( $cqueries, $iqueries );
+	$allqueries = array_merge( $cqueries, $vqueries, $iqueries );
 	if ( $execute ) {
 		foreach ( $allqueries as $query ) {
 			$wpdb->query( $query );

@@ -4631,6 +4631,19 @@ function wp_term_is_shared( $term_id ) {
 }
 
 /**
+ * Determines whether the term_taxonomy and terms tables are still separate.
+ *
+ * These tables were merged in x.y.z but can still be separate prior to completion of the database upgrade routine.
+ *
+ * @since x.y.z
+ *
+ * @return bool Whether the term_taxonomy table is still separate.
+ */
+function wp_has_separate_terms_tables(): bool {
+	return ! get_option( 'finished_merging_terms_table' );
+}
+
+/**
  * Generates a permalink for a taxonomy term archive.
  *
  * @since 2.5.0
