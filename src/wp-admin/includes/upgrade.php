@@ -2473,6 +2473,10 @@ function upgrade_xyz() {
 		LEFT JOIN $wpdb->term_taxonomy AS tt_parent ON tt_parent.term_taxonomy_id = tt.parent"
 	);
 
+	// Set term_id as primary key and add auto_increment.
+	$wpdb->query( "ALTER TABLE {$prefix}new_terms ADD PRIMARY KEY (term_id)" );
+	$wpdb->query( "ALTER TABLE {$prefix}new_terms MODIFY term_id bigint(20) unsigned NOT NULL auto_increment" );
+
 	// Atomically put the new table into place.
 	$wpdb->query( "RENAME TABLE $wpdb->terms TO {$prefix}old_terms, {$prefix}new_terms TO $wpdb->terms" );
 
