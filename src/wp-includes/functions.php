@@ -9181,7 +9181,7 @@ function wp_verify_fast_hash(
  * that serves as a unique identifier. Optionally, a prefix can be added to
  * the generated ID for context or categorization.
  *
- * @since 6.9.0
+ * @since 6.8.0
  *
  * @param array  $data   The input array to generate an ID from.
  * @param string $prefix Optional. A prefix to prepend to the generated ID. Default ''.
