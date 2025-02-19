@@ -480,7 +480,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	public function _create_temporary_tables( $query ) {
 		if ( 0 === strpos( trim( $query ), 'CREATE TABLE' ) ) {
-			return substr_replace( trim( $query ), 'CREATE TEMPORARY TABLE', 0, 12 );
+			// return substr_replace( trim( $query ), 'CREATE TEMPORARY TABLE', 0, 12 );
 		}
 		return $query;
 	}
@@ -493,7 +493,7 @@ abstract class WP_UnitTestCase_Base extends PHPUnit_Adapter_TestCase {
 	 */
 	public function _drop_temporary_tables( $query ) {
 		if ( 0 === strpos( trim( $query ), 'DROP TABLE' ) ) {
-			return substr_replace( trim( $query ), 'DROP TEMPORARY TABLE', 0, 10 );
+			// return substr_replace( trim( $query ), 'DROP TEMPORARY TABLE', 0, 10 );
 		}
 		return $query;
 	}
