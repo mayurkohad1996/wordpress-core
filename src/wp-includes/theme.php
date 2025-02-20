@@ -2938,7 +2938,9 @@ function add_theme_support( $feature, ...$args ) {
 		case 'view-transitions':
 			$defaults = array(
 				'post-selector'           => '.wp-block-post.post, article.post, body.single main',
-				'global-transition-names' => array(),
+				'global-transition-names' => array(
+					'header' => 'header',
+				),
 				'post-transition-names'   => array(
 					'post-title'     => '.wp-block-post-title, .entry-title',
 					'post-thumbnail' => '.wp-post-image',
