@@ -189,7 +189,6 @@ if ( str_ends_with( $real_file, '.php' ) ) {
 			 * @param string $plugin   Plugin file/directory name.
 			 */
 			$option_value = apply_filters( 'plugin_editor_documentation_url', $function, $file, $plugin );
-			
 			$docs_select .= '<option value="' . esc_attr( $option_value ) . '">' . esc_html( $function ) . '()</option>';
 		}
 
@@ -307,7 +306,7 @@ endif;
 		<div id="documentation" class="hide-if-no-js">
 			<label for="docs-list"><?php _e( 'Documentation:' ); ?></label>
 			<?php echo $docs_select; ?>
-			<input disabled id="docs-lookup" type="button" class="button" value="<?php esc_attr_e( 'Look Up' ); ?>" onclick="(() => { const v = jQuery('#docs-list').val(); if (!v) return; let url; if (v.startsWith('http://') || v.startsWith('https://')) { url = v; } else { try { new URL(v); url = v; } catch { url = `https://api.wordpress.org/core/handbook/1.0/?function=${escape(v)}&locale=<?php echo urlencode(get_user_locale()); ?>&version=<?php echo urlencode(get_bloginfo('version')); ?>&redirect=true`; } } window.open(url); })()" />
+			<input disabled id="docs-lookup" type="button" class="button" value="<?php esc_attr_e( 'Look Up' ); ?>" onclick="(() => { const v = jQuery('#docs-list').val(); if (!v) return; let url; if (v.startsWith('http://') || v.startsWith('https://')) { url = v; } else { try { new URL(v); url = v; } catch { url = `https://api.wordpress.org/core/handbook/1.0/?function=${escape(v)}&locale=<?php echo urlencode( get_user_locale() ); ?>&version=<?php echo urlencode( get_bloginfo( 'version' ) ); ?>&redirect=true`; } } window.open(url); })()" />
 		</div>
 	<?php endif; ?>
 
