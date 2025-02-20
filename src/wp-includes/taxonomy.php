@@ -1968,20 +1968,24 @@ function wp_count_terms( $args = array(), $deprecated = '' ) {
 function wp_delete_object_term_relationships( $object_id, $taxonomies = '' ) {
 	$object_id = (int) $object_id;
 
-	// If Taxonomies is empty use new function called get all taxonomies that have a term. 
-	if ( empty( $taxonomies ) ) {
-		$taxonomies = get_object_taxonomies( get_post_type( $object_id ) ); // This is placeholder
-	}
-
 	if ( ! is_array( $taxonomies ) ) {
 		$taxonomies = array( $taxonomies );
 	}
+	
 
 	foreach ( (array) $taxonomies as $taxonomy ) {
-		$term_ids = wp_get_object_terms( $object_id, $taxonomy, array( 'fields' => 'ids' ) );
-		if ( is_wp_error( $term_ids ) ) {
+		// Check if the taxonomy exists first, necessary for attachment where category and post_tag have to be manually added.
+		if ( ! taxonomy_exists( $taxonomy ) ) {
 			continue;
 		}
+			
+		$term_ids = wp_get_object_terms( $object_id, $taxonomy, array( 'fields' => 'ids' ) );
+
+		// Check if wp_get_object_terms() returned a WP_Error or an empty array.
+		if ( is_wp_error( $term_ids ) || empty( $term_ids ) ) {
+			continue;
+		}
+
 		$term_ids = array_map( 'intval', $term_ids );
 		wp_remove_object_terms( $object_id, $term_ids, $taxonomy );
 	}
