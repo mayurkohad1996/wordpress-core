@@ -6100,7 +6100,7 @@ EOF;
 	/**
 	 * Test deleting an attachment when 'post_tag' has been unregistered,
 	 * simulating the scenario.
-	 * 
+	 *
 	 * @ticket 60052
 	 */
 	public function test_delete_attachment_with_unregistered_post_tag() {
@@ -6120,7 +6120,7 @@ EOF;
 			unregister_taxonomy( 'category' );
 			unset( $wp_taxonomies['category'] );
 		}
-	
+
 		// Check if 'post_tag' is registered before unregistering.
 		if ( taxonomy_exists( 'post_tag' ) ) {
 			unregister_taxonomy( 'post_tag' );
