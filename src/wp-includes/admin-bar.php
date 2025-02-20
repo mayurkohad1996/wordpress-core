@@ -453,7 +453,7 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "Edit site" link to the Toolbar.
+ * Adds the "Edit Site" link to the Toolbar.
  *
  * @since 5.9.0
  * @since 6.3.0 Added `$_wp_current_template_id` global for editing of current template directly from the admin bar.
@@ -479,7 +479,7 @@ function wp_admin_bar_edit_site_menu( $wp_admin_bar ) {
 	$wp_admin_bar->add_node(
 		array(
 			'id'    => 'site-editor',
-			'title' => __( 'Edit site' ),
+			'title' => _x( 'Edit Site', 'site editor link from admin bar' ),
 			'href'  => add_query_arg(
 				array(
 					'postType' => 'wp_template',
