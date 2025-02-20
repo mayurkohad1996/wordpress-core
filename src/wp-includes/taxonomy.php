@@ -1971,7 +1971,6 @@ function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 	if ( ! is_array( $taxonomies ) ) {
 		$taxonomies = array( $taxonomies );
 	}
-	
 
 	foreach ( (array) $taxonomies as $taxonomy ) {
 		// Check if the taxonomy exists first, necessary for attachment where category and post_tag have to be manually added.
