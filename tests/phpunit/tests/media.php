@@ -6096,6 +6096,54 @@ EOF;
 			'height' => 100,
 		);
 	}
+
+
+	/**
+	 * Test deleting an attachment when 'post_tag' has been unregistered,
+	 * simulating the scenario.
+	 * 
+	 * @ticket 60052
+	 */
+	public function test_delete_attachment_with_unregistered_post_tag() {
+		global $wp_taxonomies;
+
+		// Create a test attachment.
+		$attachment_id = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/canola.jpg'
+		);
+
+		// Create and assign 'category' and 'post_tag' terms to the attachment.
+		$category_id = wp_create_category( 'Test Category 60052' );
+		$tag_id      = wp_insert_term( 'Test Tag 60052', 'post_tag' )['term_id'];
+
+		wp_set_object_terms( $attachment_id, array( $category_id ), 'category' );
+		wp_set_object_terms( $attachment_id, array( $tag_id ), 'post_tag' );
+
+		// Verify the attachment actually has these terms.
+		$this->assertNotEmpty( wp_get_object_terms( $attachment_id, 'category' ) );
+		$this->assertNotEmpty( wp_get_object_terms( $attachment_id, 'post_tag' ) );
+
+		// Unregister 'post_tag' by removing it from $wp_taxonomies.
+		// We’ll store a backup so we can restore it later.
+		$saved_post_tag = $wp_taxonomies['post_tag'];
+		unset( $wp_taxonomies['post_tag'] );
+
+		// Now, delete the attachment. In #60052, this would fail if 'post_tag' is missing,
+		// but the patched core should handle it gracefully.
+		$deleted_post = wp_delete_attachment( $attachment_id, true );
+
+		// Restore the 'post_tag' taxonomy so it doesn’t break other tests.
+		$wp_taxonomies['post_tag'] = $saved_post_tag;
+
+		// Verify the attachment was deleted (returns WP_Post object on success).
+		$this->assertInstanceOf( 'WP_Post', $deleted_post );
+
+		// Ensure there are no remaining terms for category/post_tag on that (now deleted) ID.
+		// Typically this means the relationships are removed; 
+		// the post itself is gone, but let's just be thorough.
+		$this->assertEmpty( wp_get_object_terms( $attachment_id, 'category' ) );
+		$this->assertEmpty( wp_get_object_terms( $attachment_id, 'post_tag' ) );
+	}
 }
 
 /**
