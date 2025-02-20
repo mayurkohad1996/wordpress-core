@@ -120,6 +120,7 @@ function twentytwentyoneExpandSubMenu( el ) { // jshint ignore:line
 			};
 		}
 
+		// Add add aria-controls attributes to a primary sub-menu.
 		var subMenus = document.querySelectorAll( '.primary-menu-container .sub-menu' );
 		subMenus.forEach( function( subMenu, index ) {
 			var parentLi = subMenu.closest( 'li.menu-item-has-children' );
