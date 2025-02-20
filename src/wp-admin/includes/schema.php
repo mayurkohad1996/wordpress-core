@@ -64,6 +64,7 @@ function wp_get_db_schema( $scope = 'all', $blog_id = null ) {
 ) $charset_collate;
 CREATE TABLE $wpdb->terms (
  term_id bigint(20) unsigned NOT NULL auto_increment,
+ term_taxonomy_id bigint(20) unsigned NOT NULL default 0,
  name varchar(200) NOT NULL default '',
  slug varchar(200) NOT NULL default '',
  term_group bigint(10) NOT NULL default 0,
@@ -78,7 +79,7 @@ CREATE TABLE $wpdb->terms (
 ) $charset_collate;
 CREATE VIEW $wpdb->term_taxonomy
 AS SELECT
- term_id AS term_taxonomy_id,
+ term_taxonomy_id,
  term_id,
  taxonomy,
  description,

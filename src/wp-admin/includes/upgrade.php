@@ -2455,12 +2455,14 @@ function upgrade_xyz() {
 		return;
 	}
 
-	$prefix = $wpdb->get_blog_prefix();
+	$prefix    = $wpdb->get_blog_prefix();
+	$new_terms = "{$prefix}new_terms";
 
 	// Create a new table which combines fields from wp_terms and wp_term_taxonomy.
 	$wpdb->query(
-		"CREATE TABLE {$prefix}new_terms AS SELECT
+		"CREATE TABLE $new_terms AS SELECT
 			terms.term_id,
+			tt.term_taxonomy_id,
 			terms.name,
 			terms.slug,
 			tt.taxonomy,
@@ -2474,13 +2476,14 @@ function upgrade_xyz() {
 	);
 
 	// Set term_id as primary key and add auto_increment.
-	$wpdb->query( "ALTER TABLE {$prefix}new_terms ADD PRIMARY KEY (term_id)" );
-	$wpdb->query( "ALTER TABLE {$prefix}new_terms MODIFY term_id bigint(20) unsigned NOT NULL auto_increment" );
-
-	// Atomically put the new table into place.
-	$wpdb->query( "RENAME TABLE $wpdb->terms TO {$prefix}old_terms, {$prefix}new_terms TO $wpdb->terms" );
+	$wpdb->query( "ALTER TABLE $new_terms ADD PRIMARY KEY (term_id)" );
+	$wpdb->query( "ALTER TABLE $new_terms MODIFY term_id bigint(20) unsigned NOT NULL auto_increment" );
 
 	// Add indexes to the combined table.
+	$wpdb->query( "ALTER TABLE $new_terms ADD INDEX taxonomy (taxonomy), ADD INDEX slug (slug(191)), ADD INDEX name (name(191))" );
+
+	// Atomically put the new table into place.
+	$wpdb->query( "RENAME TABLE $wpdb->terms TO {$prefix}old_terms, $new_terms TO $wpdb->terms" );
 
 	// Drop the tables that are no longer needed.
 	$wpdb->query( "DROP TABLE $wpdb->term_taxonomy, {$prefix}old_terms" );
@@ -2489,7 +2492,7 @@ function upgrade_xyz() {
 	$wpdb->query(
 		"CREATE VIEW $wpdb->term_taxonomy
 		AS SELECT
-			term_id AS term_taxonomy_id,
+			term_taxonomy_id,
 			term_id,
 			taxonomy,
 			description,

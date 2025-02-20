@@ -2630,6 +2630,16 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	}
 
 	$tt_id = (int) $wpdb->insert_id;
+	} else {
+		$wpdb->update(
+			$wpdb->terms,
+			array(
+				'term_taxonomy_id' => $term_id,
+			),
+			array(
+				'term_id' => $term_id,
+			)
+		);
 	}
 
 	/*
