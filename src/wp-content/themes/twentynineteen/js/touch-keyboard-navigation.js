@@ -98,6 +98,9 @@
 		ariaItem.setAttribute('aria-expanded', ariaState);
 	}
 
+	/**
+	 * Update the area-expanded attribute on hover.
+	 */
 	function toggleAriaExpandedOnHover() {
 		document.querySelectorAll('.main-navigation li.menu-item-has-children').forEach(function(li) {
 			['mouseenter', 'mouseleave'].forEach(function(event) {
@@ -336,7 +339,9 @@
 		}, false);
 	}
 
-	// Add unique ID to each .sub-menu and aria-controls to parent links
+	/**
+	 * Add unique ID to each .sub-menu and aria-controls to parent links.
+	 */
 	function addUniqueIDToSubMenus() {
 		var subMenus = document.querySelectorAll( '.main-navigation .sub-menu' );
 		subMenus.forEach( function( subMenu, index ) {
