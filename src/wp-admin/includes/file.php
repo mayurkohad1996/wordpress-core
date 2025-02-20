@@ -2748,29 +2748,30 @@ function wp_opcache_invalidate( $filepath, $force = false ) {
 
 	$success = opcache_invalidate( $filepath, $force );
 
-	// Handle CLI scenario
+	// Handle CLI scenario.
 	if ( 'cli' === php_sapi_name() ) {
-		// Create a flag file to signal FPM processes
+		// Create a flag file to signal FPM processes.
 		$flag_file = WP_CONTENT_DIR . '/opcache-reset-' . md5( $filepath ) . '.flag';
 		file_put_contents( $flag_file, time() );
 	}
 
-	// Handle file cache scenario
+	// Handle file cache scenario.
 	if ( ini_get( 'opcache.file_cache' ) ) {
-		// If file cache is enabled, we need to ensure complete invalidation
+		// If file cache is enabled, we need to ensure complete invalidation.
 		if ( function_exists( 'opcache_reset' ) ) {
 			opcache_reset();
 			$success = true;
 		}
 	}
 
-	// Check for reset flags in FPM context
+	// Check for reset flags in FPM context.
 	if ( 'cli' !== php_sapi_name() ) {
 		$flags = glob( WP_CONTENT_DIR . '/opcache-reset-*.flag' );
 		if ( ! empty( $flags ) ) {
 			foreach ( $flags as $flag_file ) {
 				$flag_time = (int) file_get_contents( $flag_file );
-				// If flag is recent (within last minute)
+
+				// If flag is recent (within last minute).
 				if ( time() - $flag_time < 60 ) {
 					if ( function_exists( 'opcache_reset' ) ) {
 						opcache_reset();
