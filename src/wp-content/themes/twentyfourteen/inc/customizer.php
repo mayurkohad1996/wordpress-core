@@ -136,6 +136,7 @@ function twentyfourteen_customize_partial_blogdescription() {
 function twentyfourteen_customize_partial_site_logo() {
 	echo get_custom_logo();
 }
+
 /**
  * Sanitize the Featured Content layout value.
  *
