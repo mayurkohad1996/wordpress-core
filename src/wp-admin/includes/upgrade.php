@@ -3373,8 +3373,6 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 	}
 
 	foreach ( $vqueries as $view => $qry ) {
-		$vqueries[ $view ] = str_replace( 'CREATE VIEW', 'CREATE OR REPLACE VIEW', $qry );
-
 		// Fetch the view column structure from the database.
 		$suppress   = $wpdb->suppress_errors();
 		$viewfields = $wpdb->get_results( "DESCRIBE {$view};" );
@@ -3383,6 +3381,8 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 		if ( ! $viewfields ) {
 			continue;
 		}
+
+		$vqueries[ $view ] = str_replace( 'CREATE VIEW', 'CREATE OR REPLACE VIEW', $qry );
 
 		// Remove the update log even though it might actually perform one. We don't need to make any transformations for view updates.
 		unset( $for_update[ $view ] );
