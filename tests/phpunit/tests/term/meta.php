@@ -359,6 +359,15 @@ class Tests_Term_Meta extends WP_UnitTestCase {
 		$t2 = wp_insert_term( 'Foo', 'wptests_tax_2' );
 		$t3 = wp_insert_term( 'Foo', 'wptests_tax_3' );
 
+		// what's this doing? inserting three terms, then updating term_taxonomy for term 2 and 3 with term_id from 1 to mimic two shared terms
+		// if a user is on < 4.2 and has shared terms, and they upgrade to x.y, will the term splitting cron job still work?
+		// maybe not, because the combining of tables will attempt to insert a term_id that already exists due to duplicate term_id values in wp_term_taxonomy
+
+		// this test is creating a database situation that may *exist* in the wild but is not be *creatable* in the wild
+		// do we need to rewrite `$wpdb->update( $wpdb->term_taxonomy )` queries?
+
+		// the underlying problem is that term_id is a unique (primary) key on wp_terms, but not on the old wp_term_taxonomy table
+
 		// Manually modify because shared terms shouldn't naturally occur.
 		$wpdb->update(
 			$wpdb->term_taxonomy,
