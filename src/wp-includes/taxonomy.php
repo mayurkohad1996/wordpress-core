@@ -1970,7 +1970,7 @@ function wp_delete_object_term_relationships( $object_id, $taxonomies = '' ) {
 
 	// If Taxonomies is empty use new function called get all taxonomies that have a term. 
 	if ( empty( $taxonomies ) ) {
-		$taxonomies = get_object_taxonomies( get_post_type( $object_id ) ); // This is placeholder
+		$taxonomies = get_object_taxonomies( get_post_type( $object_id ) ); // This is placeholder, change for james function.
 	}
 
 	if ( ! is_array( $taxonomies ) ) {
