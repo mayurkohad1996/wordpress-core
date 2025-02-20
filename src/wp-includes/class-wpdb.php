@@ -2589,7 +2589,7 @@ class wpdb {
 			return false;
 		}
 
-		// If we're inserting into term_taxonomy, convert it into an update on wp_terms
+		// If this is an insert into term_taxonomy, convert it into an update on wp_terms
 		if ( ( $this->term_taxonomy === $table ) && isset( $data['term_id'] ) && ! wp_has_separate_terms_tables() ) {
 			if ( ! isset( $data['term_taxonomy_id'] ) ) {
 				$data['term_taxonomy_id'] = $data['term_id'];
@@ -2604,7 +2604,7 @@ class wpdb {
 				$format
 			);
 
-			$this->insert_id = $data['term_id'];
+			$this->insert_id = (int) $data['term_id'];
 			return $update;
 		}
 

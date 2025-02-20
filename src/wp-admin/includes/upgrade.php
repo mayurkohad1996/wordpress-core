@@ -2461,16 +2461,17 @@ function upgrade_xyz() {
 		return;
 	}
 
+	$prefix    = $wpdb->get_blog_prefix();
+	$new_terms = "{$prefix}new_terms";
+	$test_view = "{$prefix}test_view";
+
 	// Check for CREATE VIEW privilege.
-	$can_create_view = $wpdb->query( "CREATE VIEW {$wpdb->prefix}test_view AS SELECT 1" );
-	$wpdb->query( "DROP VIEW IF EXISTS {$wpdb->prefix}test_view" );
+	$can_create_view = $wpdb->query( "CREATE VIEW $test_view AS SELECT 1" );
+	$wpdb->query( "DROP VIEW IF EXISTS $test_view" );
 
 	if ( false === $can_create_view ) {
 		wp_die( 'oh no' ); // @TODO need pre-upgrade checks for this
 	}
-
-	$prefix    = $wpdb->get_blog_prefix();
-	$new_terms = "{$prefix}new_terms";
 
 	// Create a new table which combines fields from wp_terms and wp_term_taxonomy.
 	$wpdb->query(
