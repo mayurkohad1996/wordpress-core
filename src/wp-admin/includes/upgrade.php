@@ -2463,6 +2463,7 @@ function upgrade_xyz() {
 
 	$prefix    = $wpdb->get_blog_prefix();
 	$new_terms = "{$prefix}new_terms";
+	$old_terms = "{$prefix}old_terms";
 	$test_view = "{$prefix}test_view";
 
 	// Check for CREATE VIEW privilege.
@@ -2472,6 +2473,9 @@ function upgrade_xyz() {
 	if ( false === $can_create_view ) {
 		wp_die( 'oh no' ); // @TODO need pre-upgrade checks for this
 	}
+
+	// @TODO Term splitting must have finished before this process can start, otherwise it can result in duplicate
+	// term_ids from term_taxonomy being inserted into the new new_terms table.
 
 	// @TODO Need to shunt this to a chunked cron event if there's too many rows in the terms or taxonomy_term table.
 	// What's manageable? < 10k? Need to run performance testing.
@@ -2506,10 +2510,10 @@ function upgrade_xyz() {
 	$wpdb->query( "ALTER TABLE $new_terms ADD INDEX taxonomy (taxonomy), ADD INDEX slug (slug(191)), ADD INDEX name (name(191))" );
 
 	// Atomically put the new table into place.
-	$wpdb->query( "RENAME TABLE $wpdb->terms TO {$prefix}old_terms, $new_terms TO $wpdb->terms" );
+	$wpdb->query( "RENAME TABLE $wpdb->terms TO $old_terms, $new_terms TO $wpdb->terms" );
 
 	// Drop the tables that are no longer needed.
-	$wpdb->query( "DROP TABLE $wpdb->term_taxonomy, {$prefix}old_terms" );
+	$wpdb->query( "DROP TABLE $wpdb->term_taxonomy, $old_terms" );
 
 	// Create a view for wp_term_taxonomy which selects from the new combined table.
 	$wpdb->query(

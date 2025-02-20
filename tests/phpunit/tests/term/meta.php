@@ -367,6 +367,8 @@ class Tests_Term_Meta extends WP_UnitTestCase {
 		// do we need to rewrite `$wpdb->update( $wpdb->term_taxonomy )` queries?
 
 		// the underlying problem is that term_id is a unique (primary) key on wp_terms, but not on the old wp_term_taxonomy table
+		// a shared term results in multiple rows in wp_term_taxonomy with the same term_id, but one row in wp_terms.
+		// Once shared terms have finished being split, this is no longer the case.
 
 		// Manually modify because shared terms shouldn't naturally occur.
 		$wpdb->update(
