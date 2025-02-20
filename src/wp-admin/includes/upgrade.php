@@ -192,6 +192,12 @@ if ( ! function_exists( 'wp_install_defaults' ) ) :
 				'name'       => $cat_name,
 				'slug'       => $cat_slug,
 				'term_group' => 0,
+				)
+			);
+			$wpdb->insert(
+				$wpdb->term_taxonomy,
+				array(
+				'term_id'     => $cat_id,
 				'taxonomy'    => 'category',
 				'description' => '',
 				'parent'      => 0,
