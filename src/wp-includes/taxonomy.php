@@ -1963,7 +1963,7 @@ function wp_count_terms( $args = array(), $deprecated = '' ) {
  * @since 2.3.0
  *
  * @param int          $object_id  The term object ID that refers to the term.
- * @param string|array  $taxonomies List of taxonomy names or single taxonomy name.
+ * @param string|array $taxonomies List of taxonomy names or single taxonomy name.
  */
 function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 	$object_id = (int) $object_id;
