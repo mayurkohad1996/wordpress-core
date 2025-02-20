@@ -1796,6 +1796,11 @@ mockedApiResponse.Schema = {
                             ],
                             "required": false
                         },
+                        "ancestor": {
+                            "description": "Limit result set to items that are descendants of a particular ancestor ID.",
+                            "type": "integer",
+                            "required": false
+                        },
                         "parent": {
                             "description": "Limit result set to items with particular parent IDs.",
                             "type": "array",
