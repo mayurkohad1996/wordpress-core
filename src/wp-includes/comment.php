@@ -1762,11 +1762,11 @@ function wp_get_comment_status( $comment_id ) {
 
 	$approved = $comment->comment_approved;
 
-	if ( null == $approved ) {
+	if ( null === $approved ) {
 		return false;
-	} elseif ( '1' == $approved ) {
+	} elseif ( '1' === $approved ) {
 		return 'approved';
-	} elseif ( '0' == $approved ) {
+	} elseif ( '0' === $approved ) {
 		return 'unapproved';
 	} elseif ( 'spam' === $approved ) {
 		return 'spam';
@@ -2373,7 +2373,7 @@ function wp_new_comment_notify_moderator( $comment_id ) {
 	$comment = get_comment( $comment_id );
 
 	// Only send notifications for pending comments.
-	$maybe_notify = ( '0' == $comment->comment_approved );
+	$maybe_notify = ( '0' === $comment->comment_approved );
 
 	/** This filter is documented in wp-includes/pluggable.php */
 	$maybe_notify = apply_filters( 'notify_moderator', $maybe_notify, $comment_id );
@@ -2421,7 +2421,7 @@ function wp_new_comment_notify_postauthor( $comment_id ) {
 	}
 
 	// Only send notifications for approved comments.
-	if ( ! isset( $comment->comment_approved ) || '1' != $comment->comment_approved ) {
+	if ( ! isset( $comment->comment_approved ) || '1' !== $comment->comment_approved ) {
 		return false;
 	}
 
@@ -3124,7 +3124,7 @@ function pingback( $content, $post ) {
 	 */
 	foreach ( (array) $post_links_temp as $link_test ) {
 		// If we haven't pung it already and it isn't a link to itself.
-		if ( ! in_array( $link_test, $pung, true ) && ( url_to_postid( $link_test ) != $post->ID )
+		if ( ! in_array( $link_test, $pung, true ) && ( url_to_postid( $link_test ) !== $post->ID )
 			// Also, let's never ping local attachments.
 			&& ! is_local_attachment( $link_test )
 		) {
