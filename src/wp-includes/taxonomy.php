@@ -4516,6 +4516,41 @@ function _wp_batch_split_terms() {
 }
 
 /**
+ * Combines a batch of rows from the terms and term_taxonomy tables.
+ *
+ * @TODO How to account for changes to terms while this process runs? Additions will mostly be ok, but with poor timing
+ * could be missed from the last batch. Updates or deletions will easily be missed. Need a fast final step which performs
+ * a diff to find new, changed, and deleted terms.
+ *
+ * @since x.y.z
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ */
+function _wp_batch_combine_term_tables() {
+	global $wpdb;
+
+	$lock_name = 'combine_term_tables.lock';
+
+	// Try to lock.
+	$lock_result = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` ( `option_name`, `option_value`, `autoload` ) VALUES (%s, %s, 'off') /* LOCK */", $lock_name, time() ) );
+
+	if ( ! $lock_result ) {
+		$lock_result = get_option( $lock_name );
+
+		// Bail if we were unable to create a lock, or if the existing lock is still valid.
+		if ( ! $lock_result || ( $lock_result > ( time() - HOUR_IN_SECONDS ) ) ) {
+			wp_schedule_single_event( time() + ( 5 * MINUTE_IN_SECONDS ), 'wp_combine_term_tables_batch' );
+			return;
+		}
+	}
+
+	// Update the lock, as by this point we've definitely got a lock, just need to fire the actions.
+	update_option( $lock_name, time() );
+
+	// ...
+}
+
+/**
  * In order to avoid the _wp_batch_split_terms() job being accidentally removed,
  * checks that it's still scheduled while we haven't finished splitting terms.
  *
@@ -4525,6 +4560,19 @@ function _wp_batch_split_terms() {
 function _wp_check_for_scheduled_split_terms() {
 	if ( ! get_option( 'finished_splitting_shared_terms' ) && ! wp_next_scheduled( 'wp_split_shared_term_batch' ) ) {
 		wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'wp_split_shared_term_batch' );
+	}
+}
+
+/**
+ * In order to avoid the _wp_batch_combine_term_tables() job being accidentally removed,
+ * checks that it's still scheduled while we haven't finished combining term tables.
+ *
+ * @ignore
+ * @since x.y.z
+ */
+function _wp_check_for_scheduled_combine_term_tables() {
+	if ( wp_has_separate_terms_tables() && ! wp_next_scheduled( 'wp_combine_term_tables_batch' ) ) {
+		wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'wp_combine_term_tables_batch' );
 	}
 }
 

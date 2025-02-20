@@ -2473,6 +2473,14 @@ function upgrade_xyz() {
 		wp_die( 'oh no' ); // @TODO need pre-upgrade checks for this
 	}
 
+	// @TODO Need to shunt this to a chunked cron event if there's too many rows in the terms or taxonomy_term table.
+	// What's manageable? < 10k? Need to run performance testing.
+	$too_many = false;
+	if ( $too_many ) {
+		wp_schedule_single_event( time() + ( 1 * MINUTE_IN_SECONDS ), 'wp_combine_term_tables_batch' );
+		return;
+	}
+
 	// Create a new table which combines fields from wp_terms and wp_term_taxonomy.
 	$wpdb->query(
 		"CREATE TABLE $new_terms AS SELECT
