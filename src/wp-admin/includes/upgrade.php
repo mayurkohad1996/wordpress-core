@@ -2461,6 +2461,14 @@ function upgrade_xyz() {
 		return;
 	}
 
+	// Check for CREATE VIEW privilege.
+	$can_create_view = $wpdb->query( "CREATE VIEW {$wpdb->prefix}test_view AS SELECT 1" );
+	$wpdb->query( "DROP VIEW IF EXISTS {$wpdb->prefix}test_view" );
+
+	if ( false === $can_create_view ) {
+		wp_die( 'oh no' ); // @TODO need pre-upgrade checks for this
+	}
+
 	$prefix    = $wpdb->get_blog_prefix();
 	$new_terms = "{$prefix}new_terms";
 
