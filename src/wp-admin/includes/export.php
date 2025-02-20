@@ -120,6 +120,7 @@ function export_wp( $args = array() ) {
 	$wp_filename .= '.xml';
 
 	$wp_filename = sanitize_file_name( $wp_filename );
+
 	/**
 	 * Filters the export filename.
 	 *
