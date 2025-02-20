@@ -6370,7 +6370,7 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	do_action( 'delete_attachment', $post_id, $post );
 
 	// Delete relationships for category and post tag if they exist.
-	wp_delete_object_term_relationships( $post_id );
+	wp_delete_object_term_relationships( $post_id, array_merge( get_object_taxonomies( $post->post_type ), array( 'category', 'post_tag' ) ) );
 
 	// Delete all for any posts.
 	delete_metadata( 'post', null, '_thumbnail_id', $post_id, true );
