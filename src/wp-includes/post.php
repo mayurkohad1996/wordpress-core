@@ -6370,15 +6370,7 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	do_action( 'delete_attachment', $post_id, $post );
 
 	// Delete relationships for category and post tag if they exist.
-	if ( ! is_wp_error( wp_get_object_terms( $post_id, 'category' ) ) ) {
-		wp_delete_object_term_relationships( $post_id, array( 'category' ) );
-	}
-
-	if ( ! is_wp_error( wp_get_object_terms( $post_id, 'post_tag' ) ) ) {
-		wp_delete_object_term_relationships( $post_id, array( 'post_tag' ) );
-	}
-	
-	wp_delete_object_term_relationships( $post_id, get_object_taxonomies( $post->post_type ) );
+	wp_delete_object_term_relationships( $post_id );
 
 	// Delete all for any posts.
 	delete_metadata( 'post', null, '_thumbnail_id', $post_id, true );

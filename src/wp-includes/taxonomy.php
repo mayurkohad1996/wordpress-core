@@ -1963,10 +1963,15 @@ function wp_count_terms( $args = array(), $deprecated = '' ) {
  * @since 2.3.0
  *
  * @param int          $object_id  The term object ID that refers to the term.
- * @param string|array $taxonomies List of taxonomy names or single taxonomy name.
+ * @param string|array|void  $taxonomies List of taxonomy names or single taxonomy name.
  */
-function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
+function wp_delete_object_term_relationships( $object_id, $taxonomies = '' ) {
 	$object_id = (int) $object_id;
+
+	// If Taxonomies is empty use new function called get all taxonomies that have a term. 
+	if ( empty( $taxonomies ) ) {
+		$taxonomies = get_object_taxonomies( get_post_type( $object_id ) ); // This is placeholder
+	}
 
 	if ( ! is_array( $taxonomies ) ) {
 		$taxonomies = array( $taxonomies );
@@ -1974,6 +1979,9 @@ function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 
 	foreach ( (array) $taxonomies as $taxonomy ) {
 		$term_ids = wp_get_object_terms( $object_id, $taxonomy, array( 'fields' => 'ids' ) );
+		if ( is_wp_error( $term_ids ) ) {
+			continue;
+		}
 		$term_ids = array_map( 'intval', $term_ids );
 		wp_remove_object_terms( $object_id, $term_ids, $taxonomy );
 	}
