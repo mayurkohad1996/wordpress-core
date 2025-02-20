@@ -65,7 +65,7 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 		return;
 	}
 
-	// Don't redirect URLs with commas in query parameters (Bug #62920)
+	// Don't redirect URLs with commas in query parameters (Bug #62920).
 	if ( isset( $_SERVER['QUERY_STRING'] ) && strpos( $_SERVER['QUERY_STRING'], ',' ) !== false ) {
 		return false;
 	}
