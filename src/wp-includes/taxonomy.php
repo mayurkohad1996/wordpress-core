@@ -1977,7 +1977,7 @@ function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 		if ( ! taxonomy_exists( $taxonomy ) ) {
 			continue;
 		}
-			
+
 		$term_ids = wp_get_object_terms( $object_id, $taxonomy, array( 'fields' => 'ids' ) );
 
 		// Check if wp_get_object_terms() returned a WP_Error or an empty array.
