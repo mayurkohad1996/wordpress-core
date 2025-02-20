@@ -2589,8 +2589,12 @@ class wpdb {
 			return false;
 		}
 
-		if ( ( $this->term_taxonomy === $table ) && isset( $data['term_id'] ) && wp_has_separate_terms_tables() ) {
-			// If we're inserting into term_taxonomy, convert it into an update on wp_terms
+		// If we're inserting into term_taxonomy, convert it into an update on wp_terms
+		if ( ( $this->term_taxonomy === $table ) && isset( $data['term_id'] ) && ! wp_has_separate_terms_tables() ) {
+			if ( ! isset( $data['term_taxonomy_id'] ) ) {
+				$data['term_taxonomy_id'] = $data['term_id'];
+			}
+
 			$update = $this->update(
 				$this->terms,
 				$data,
