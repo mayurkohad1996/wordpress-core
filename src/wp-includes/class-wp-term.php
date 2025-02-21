@@ -103,13 +103,13 @@ final class WP_Term {
 	 * Retrieve WP_Term instance.
 	 *
 	 * @since 4.4.0
-	 * @since x.y.z The `$taxonomy` parameter is no longer used.
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @param int    $term_id  Term ID.
-	 * @param string $taxonomy Unused.
-	 * @return WP_Term|false Term object, if found. False on failure.
+	 * @param string $taxonomy Optional. Limit matched terms to those matching `$taxonomy`.
+	 * @return WP_Term|WP_Error|false Term object, if found. WP_Error if the matching term belongs to a taxonomy that
+	 *                                does not exist. False for other failures.
 	 */
 	public static function get_instance( $term_id, $taxonomy = null ) {
 		global $wpdb;
@@ -122,7 +122,7 @@ final class WP_Term {
 		$_term = wp_cache_get( $term_id, 'terms' );
 
 		// If there isn't a cached version, hit the database.
-		if ( ! $_term ) {
+		if ( ! $_term || ( $taxonomy && $taxonomy !== $_term->taxonomy ) ) {
 			// Any term found in the cache is not a match, so don't use it.
 			$_term = false;
 
@@ -130,6 +130,11 @@ final class WP_Term {
 			$_term = $wpdb->get_row( $wpdb->prepare( "SELECT t.*, tt.* FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id = %d LIMIT 1", $term_id ) );
 
 			if ( ! $_term ) {
+				return false;
+			}
+
+			// If a taxonomy was specified, ensure it matches.
+			if ( $taxonomy && $taxonomy !== $_term->taxonomy ) {
 				return false;
 			}
 
