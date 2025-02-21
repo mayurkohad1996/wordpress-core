@@ -430,7 +430,7 @@ abstract class WP_Image_Editor {
 	 * @return string filename
 	 */
 	public function generate_filename( $suffix = null, $dest_path = null, $extension = null ) {
-		// $suffix will be appended to the destination filename, just before the extension.
+		// If not empty the $suffix will be appended to the destination filename, just before the extension.
 		if ( $suffix ) {
 			$suffix = '-' . $suffix;
 		} elseif ( '' !== $suffix ) {
