@@ -950,8 +950,8 @@
 		}
 	}
 
-	//! wp-block-social-links
-	.wp-block-social-links .wp-block-social-link.wp-social-link .wp-block-social-link-anchor {
+	//! Social Icons
+	a:where(.wp-block-social-link-anchor) {
 		text-decoration: none;
 	}
 
