@@ -423,6 +423,7 @@ abstract class WP_Image_Editor {
 	 * Builds an output filename based on current file, and adding proper suffix
 	 *
 	 * @since 3.5.0
+	 * @since 6.8.0 Passing an empty string as $suffix will now omit the suffix from the generated filename.
 	 *
 	 * @param string $suffix
 	 * @param string $dest_path
