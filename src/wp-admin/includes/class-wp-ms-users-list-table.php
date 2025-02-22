@@ -471,9 +471,9 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 
 		/**
 		 * Fires for each custom column in the Network Users list table.
-		 * 
+		 *
 		 * @since 6.8.0
-		 * 
+		 *
 		 * @param string $output      Custom column output. Default empty.
 		 * @param string $column_name Name of the custom column.
 		 * @param int    $user_id     ID of the currently-listed user.
