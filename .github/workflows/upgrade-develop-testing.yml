@@ -71,7 +71,19 @@ jobs:
             php: '7.2'
             db-type: 'mysql'
             db-version: '5.7'
+            wp: 4.1
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
             wp: 4.2
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.3
             multisite: false
           - os: 'ubuntu-24.04'
             php: '7.2'
@@ -83,19 +95,31 @@ jobs:
             php: '7.2'
             db-type: 'mysql'
             db-version: '5.7'
+            wp: 4.8
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.9
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 5.0
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 5.1
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
             wp: 5.2
-            multisite: false
-          - os: 'ubuntu-24.04'
-            php: '7.2'
-            db-type: 'mysql'
-            db-version: '5.7'
-            wp: 5.7
-            multisite: false
-          - os: 'ubuntu-24.04'
-            php: '7.2'
-            db-type: 'mysql'
-            db-version: '5.7'
-            wp: 6.2
             multisite: false
 
         exclude:
