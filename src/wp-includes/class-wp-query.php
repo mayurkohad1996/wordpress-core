@@ -797,9 +797,8 @@ class WP_Query {
 	 *                                                   disable cache priming for term meta, so that each
 	 *                                                   get_term_meta() call will hit the database.
 	 *                                                   Defaults to the value of `$update_post_term_cache`.
-	 *     @type bool            $lazy_load_post_meta    Whether to lazy-load post meta. Setting to false will
-	 *                                                   disable cache priming for post meta, so that each
-	 *                                                   get_post_meta() call will hit the database.
+	 *     @type bool            $lazy_load_post_meta    Whether to lazy-load post meta. If set to false, post meta priming will
+	 *                                                   fallback to the default behavior of priming post meta.
 	 *     @type int             $w                      The week number of the year. Default empty. Accepts numbers 0-53.
 	 *     @type int             $year                   The four-digit year. Default empty. Accepts any four-digit year.
 	 * }
@@ -1295,7 +1294,7 @@ class WP_Query {
 		if ( ! empty( $q['category__not_in'] ) ) {
 			$q['category__not_in'] = array_map( 'absint', array_unique( (array) $q['category__not_in'] ) );
 			sort( $q['category__not_in'] );
-			$tax_query[]           = array(
+			$tax_query[] = array(
 				'taxonomy'         => 'category',
 				'terms'            => $q['category__not_in'],
 				'operator'         => 'NOT IN',
@@ -1364,7 +1363,7 @@ class WP_Query {
 		if ( ! empty( $q['tag__not_in'] ) ) {
 			$q['tag__not_in'] = array_map( 'absint', array_unique( (array) $q['tag__not_in'] ) );
 			sort( $q['tag__not_in'] );
-			$tax_query[]      = array(
+			$tax_query[] = array(
 				'taxonomy' => 'post_tag',
 				'terms'    => $q['tag__not_in'],
 				'operator' => 'NOT IN',
