@@ -1999,9 +1999,12 @@ class WP_Query {
 			$q['update_post_meta_cache'] = true;
 		}
 
+		// Default lazy loading post meta to false, as this `update_post_meta_cache` defaults to true.
+		// To correctly use the lazy_load_post_meta parameter, you must set update_post_meta_cache to false first.
 		if ( ! isset( $q['lazy_load_post_meta'] ) ) {
 			$q['lazy_load_post_meta'] = false;
 		} elseif ( $q['lazy_load_post_meta'] ) {
+			// Lazy loading post meta only works if post meta caches are not primed.
 			$q['update_post_meta_cache'] = false;
 		}
 
