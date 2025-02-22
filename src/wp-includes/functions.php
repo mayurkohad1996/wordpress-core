@@ -7357,6 +7357,11 @@ function _device_can_upload() {
  * @return bool True if the path is a stream URL.
  */
 function wp_is_stream( $path ) {
+
+	if ( empty( $path ) && ! is_string( $path ) ) {
+		return false;
+	}
+
 	$scheme_separator = strpos( $path, '://' );
 
 	if ( false === $scheme_separator ) {
