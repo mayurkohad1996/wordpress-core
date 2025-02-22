@@ -720,7 +720,7 @@ class Test_Query_CacheResults extends WP_UnitTestCase {
 					'update_menu_item_cache' => false,
 				),
 			),
-			'lazy load post meta'       => array(
+			'lazy load post meta'                          => array(
 				'query_vars1' => array( 'lazy_load_post_meta' => true ),
 				'query_vars2' => array( 'lazy_load_post_meta' => false ),
 			),
