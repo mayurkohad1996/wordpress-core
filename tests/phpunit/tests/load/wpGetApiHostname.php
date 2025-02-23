@@ -19,6 +19,7 @@ class Test_WP_Get_API_Hostname extends WP_UnitTestCase {
 	 */
 	public function test_wp_get_api_hostname_returns_default_value() {
 		$this->assertSame( 'https://api.wordpress.org', wp_get_api_hostname() );
+		$this->assertSame( 'http://api.wordpress.org', wp_get_api_hostname( true ) );
 	}
 
 	/**

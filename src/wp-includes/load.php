@@ -378,13 +378,19 @@ function wp_is_development_mode( $mode ) {
  *
  * @since 6.8.0
  *
+ * @param bool $use_http Optional. Whether to use HTTP or HTTPS scheme for the default API endpoint. Default true.
  * @return string The current API hostname.
  */
-function wp_get_api_hostname() {
+function wp_get_api_hostname( $use_http = false ) {
 	static $current_hostname = '';
 
 	if ( defined( 'WP_RUN_CORE_TESTS' ) || '' === $current_hostname ) {
-		$current_hostname = 'https://api.wordpress.org';
+		/*
+		 * We only check the schema for the default API hostname, as anyone overriding it may
+		 * be doing so intentionally, for example an environment that relies on host aliases,
+		 * and are expected to know what they are doing.
+		 */
+		$current_hostname = ( $use_http ? 'http://' : 'https://' ) . 'api.wordpress.org';
 
 		// Check if the environment variable has been set, if `getenv` is available on the system.
 		if ( function_exists( 'getenv' ) ) {
