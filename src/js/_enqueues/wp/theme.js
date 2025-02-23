@@ -349,7 +349,7 @@ themes.Collection = Backbone.Collection.extend({
 		request: {}
 	},
 
-	// Send request to the `/themes` endpoint of the WordPress API.
+	// Send request to api.wordpress.org/themes.
 	apiCall: function( request, paginated ) {
 		return wp.ajax.send( 'query-themes', {
 			data: {

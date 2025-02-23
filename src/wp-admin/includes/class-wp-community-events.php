@@ -10,7 +10,7 @@
 /**
  * Class WP_Community_Events.
  *
- * A client for the `/events` endpoint of the WordPress API.
+ * A client for api.wordpress.org/events.
  *
  * @since 4.8.0
  */

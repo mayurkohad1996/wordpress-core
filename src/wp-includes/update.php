@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * The WordPress version, PHP version, and locale is sent.
  *
- * Checks against the WordPress API server. Will only check
+ * Checks against the WordPress server at api.wordpress.org. Will only check
  * if WordPress isn't installing.
  *
  * @since 2.3.0
@@ -308,7 +308,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
  *
  * A list of all plugins installed is sent to WP, along with the site locale.
  *
- * Checks against the WordPress API server. Will only check
+ * Checks against the WordPress server at api.wordpress.org. Will only check
  * if WordPress isn't installing.
  *
  * @since 2.3.0
@@ -580,7 +580,7 @@ function wp_update_plugins( $extra_stats = array() ) {
  *
  * A list of all themes installed is sent to WP, along with the site locale.
  *
- * Checks against the WordPress API server. Will only check
+ * Checks against the WordPress server at api.wordpress.org. Will only check
  * if WordPress isn't installing.
  *
  * @since 2.7.0
