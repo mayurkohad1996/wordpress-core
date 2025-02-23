@@ -66,61 +66,61 @@ jobs:
         wp: [ '6.5', '6.6', '6.7' ]
         multisite: [ false, true ]
 
-      include:
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 4.1
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 4.2
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 4.3
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 4.7
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 4.8
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 4.9
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 5.0
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 5.1
-          multisite: false
-        - os: 'ubuntu-24.04'
-          php: '7.2'
-          db-type: 'mysql'
-          db-version: '5.7'
-          wp: 5.2
-          multisite: false
+        include:
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.1
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.2
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.3
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.7
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.8
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 4.9
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 5.0
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 5.1
+            multisite: false
+          - os: 'ubuntu-24.04'
+            php: '7.2'
+            db-type: 'mysql'
+            db-version: '5.7'
+            wp: 5.2
+            multisite: false
 
         exclude:
           # The PHP <= 7.3/MySQL 8.4 jobs currently fail due to mysql_native_password being disabled by default. See https://core.trac.wordpress.org/ticket/61218.
