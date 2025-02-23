@@ -1319,6 +1319,16 @@ class WP_Site_Health {
 
 			$result['label'] = __( 'Could not reach the WordPress API' );
 
+			/*
+			 * By validating that the parsed URL does not return `null`,
+			 * we avoid a deprecation warning when running `gethostbyname()` later.
+			 */
+			$api_hostname    = wp_get_api_hostname();
+			$parsed_hostname = parse_url( $api_hostname, PHP_URL_HOST );
+			if ( null === $parsed_hostname ) {
+				$parsed_hostname = $api_hostname;
+			}
+
 			$result['description'] .= sprintf(
 				'<p>%s</p>',
 				sprintf(
@@ -1328,7 +1338,7 @@ class WP_Site_Health {
 					sprintf(
 						/* translators: 1: The IP address the WordPress API resolves to. 2: The error returned by the lookup. */
 						__( 'Your site is unable to reach the WordPress API at %1$s, and returned the error: %2$s' ),
-						gethostbyname( wp_get_api_hostname() ),
+						gethostbyname( $parsed_hostname ),
 						$wp_dotorg->get_error_message()
 					)
 				)
