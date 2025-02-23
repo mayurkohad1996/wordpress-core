@@ -151,7 +151,7 @@ elseif ( count( $missing_extensions ) > 0 ) :
 	echo '<p>' . implode( '</p><p>', $missing_extensions ) . '</p>';
 elseif ( $may_have_shared_terms ) :
 	// This is the last version that contained support for handling and splitting shared terms.
-	$interim_version = '6.8';
+	$interim_version = '6.7';
 	$interim_version_url = sprintf(
 		/* translators: %s: WordPress version. */
 		esc_url( __( 'https://wordpress.org/documentation/wordpress-version/version-%s/' ) ),
