@@ -820,11 +820,17 @@ class Tests_DB extends WP_UnitTestCase {
 			"CREATE TEMPORARY TABLE $table",
 			"CREATE TABLE IF NOT EXISTS $table",
 
+			"CREATE VIEW $table",
+			"CREATE OR REPLACE VIEW $table",
+
 			"ALTER TABLE $table",
 			"ALTER IGNORE TABLE $table",
 
 			"DROP TABLE $table",
 			"DROP TABLE IF EXISTS $table",
+
+			"DROP VIEW $table",
+			"DROP VIEW IF EXISTS $table",
 
 			"CREATE INDEX foo(bar(20)) ON $table",
 			"CREATE UNIQUE INDEX foo(bar(20)) ON $table",

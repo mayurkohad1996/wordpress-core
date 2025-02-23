@@ -881,6 +881,11 @@ function upgrade_all() {
 	if ( $wp_current_db_version < 58975 ) {
 		upgrade_670();
 	}
+
+	if ( $wp_current_db_version < 60000 ) { // @TODO
+		upgrade_xyz();
+	}
+
 	maybe_disable_link_manager();
 
 	maybe_disable_automattic_widgets();
@@ -1992,12 +1997,6 @@ function upgrade_430() {
 		upgrade_430_fix_comments();
 	}
 
-	// Shared terms are split in a separate process.
-	if ( $wp_current_db_version < 32814 ) {
-		update_option( 'finished_splitting_shared_terms', 0 );
-		wp_schedule_single_event( time() + ( 1 * MINUTE_IN_SECONDS ), 'wp_split_shared_term_batch' );
-	}
-
 	if ( $wp_current_db_version < 33055 && 'utf8mb4' === $wpdb->charset ) {
 		if ( is_multisite() ) {
 			$tables = $wpdb->tables( 'blog' );
@@ -2071,12 +2070,6 @@ function upgrade_430_fix_comments() {
  * @since 4.3.1
  */
 function upgrade_431() {
-	// Fix incorrect cron entries for term splitting.
-	$cron_array = _get_cron_array();
-	if ( isset( $cron_array['wp_batch_split_terms'] ) ) {
-		unset( $cron_array['wp_batch_split_terms'] );
-		_set_cron_array( $cron_array );
-	}
 }
 
 /**
@@ -2439,6 +2432,94 @@ function upgrade_670() {
 		wp_set_options_autoload( $options, false );
 	}
 }
+
+/**
+ * Executes changes made in WordPress x.y.z.
+ *
+ * @ignore
+ * @since x.y.z
+ *
+ * @global int  $wp_current_db_version The old (current) database version.
+ * @global wpdb $wpdb                  WordPress database abstraction object.
+ */
+function upgrade_xyz() {
+	global $wp_current_db_version, $wpdb;
+
+	if ( $wp_current_db_version >= 60000 ) { // @TODO
+		return;
+	}
+
+	$prefix    = $wpdb->get_blog_prefix();
+	$new_terms = "{$prefix}new_terms";
+	$old_terms = "{$prefix}old_terms";
+	$test_view = "{$prefix}test_view";
+
+	// Check for CREATE VIEW privilege.
+	$can_create_view = $wpdb->query( "CREATE VIEW $test_view AS SELECT 1" );
+	$wpdb->query( "DROP VIEW IF EXISTS $test_view" );
+
+	if ( false === $can_create_view ) {
+		wp_die( 'oh no' ); // @TODO need pre-upgrade checks for this
+	}
+
+	// @TODO Term splitting must have finished before this process can start, otherwise it can result in duplicate
+	// term_ids from term_taxonomy being inserted into the new new_terms table.
+
+	// @TODO Need to shunt this to a chunked cron event if there's too many rows in the terms or taxonomy_term table.
+	// What's manageable? < 10k? Need to run performance testing.
+	$too_many = false;
+	if ( $too_many ) {
+		wp_schedule_single_event( time() + ( 1 * MINUTE_IN_SECONDS ), 'wp_combine_term_tables_batch' );
+		return;
+	}
+
+	// Create a new table which combines fields from wp_terms and wp_term_taxonomy.
+	$wpdb->query(
+		"CREATE TABLE $new_terms AS SELECT
+			terms.term_id,
+			tt.term_taxonomy_id,
+			terms.name,
+			terms.slug,
+			tt.taxonomy,
+			tt.description,
+			tt_parent.term_id AS parent,
+			tt.count,
+			terms.term_group
+		FROM $wpdb->terms AS terms
+		JOIN $wpdb->term_taxonomy AS tt ON tt.term_id = terms.term_id
+		LEFT JOIN $wpdb->term_taxonomy AS tt_parent ON tt_parent.term_taxonomy_id = tt.parent"
+	);
+
+	// Set term_id as primary key and add auto_increment.
+	$wpdb->query( "ALTER TABLE $new_terms ADD PRIMARY KEY (term_id)" );
+	$wpdb->query( "ALTER TABLE $new_terms MODIFY term_id bigint(20) unsigned NOT NULL auto_increment" );
+
+	// Add indexes to the combined table.
+	$wpdb->query( "ALTER TABLE $new_terms ADD INDEX taxonomy (taxonomy), ADD INDEX slug (slug(191)), ADD INDEX name (name(191))" );
+
+	// Atomically put the new table into place.
+	$wpdb->query( "RENAME TABLE $wpdb->terms TO $old_terms, $new_terms TO $wpdb->terms" );
+
+	// Drop the tables that are no longer needed.
+	$wpdb->query( "DROP TABLE $wpdb->term_taxonomy, $old_terms" );
+
+	// Create a view for wp_term_taxonomy which selects from the new combined table.
+	$wpdb->query(
+		"CREATE VIEW $wpdb->term_taxonomy
+		AS SELECT
+			term_taxonomy_id,
+			term_id,
+			taxonomy,
+			description,
+			parent,
+			count
+		FROM {$wpdb->terms}"
+	);
+
+	// Set the flag.
+	add_option( 'finished_combining_terms_tables', '1', '', true );
+}
+
 /**
  * Executes network-level upgrade routines.
  *
@@ -2885,6 +2966,7 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 	$queries = apply_filters( 'dbdelta_queries', $queries );
 
 	$cqueries   = array(); // Creation queries.
+	$vqueries   = array(); // View queries.
 	$iqueries   = array(); // Insertion queries.
 	$for_update = array();
 
@@ -2893,6 +2975,12 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 		if ( preg_match( '|CREATE TABLE ([^ ]*)|', $qry, $matches ) ) {
 			$cqueries[ trim( $matches[1], '`' ) ] = $qry;
 			$for_update[ $matches[1] ]            = 'Created table ' . $matches[1];
+			continue;
+		}
+
+		if ( preg_match( '#(CREATE VIEW|CREATE OR REPLACE VIEW) ([^ ]*)#', $qry, $matches ) ) {
+			$vqueries[ trim( $matches[1], '`' ) ] = $qry;
+			$for_update[ $matches[1] ]            = 'Created view ' . $matches[1];
 			continue;
 		}
 
@@ -2922,6 +3010,17 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 	 * @param string[] $cqueries An array of dbDelta create SQL queries.
 	 */
 	$cqueries = apply_filters( 'dbdelta_create_queries', $cqueries );
+
+	/**
+	 * Filters the dbDelta SQL queries for creating views.
+	 *
+	 * Queries filterable via this hook contain "CREATE VIEW" or "CREATE OR REPLACE VIEW".
+	 *
+	 * @since x.y.z
+	 *
+	 * @param string[] $vqueries An array of dbDelta create SQL queries.
+	 */
+	$vqueries = apply_filters( 'dbdelta_view_queries', $vqueries );
 
 	/**
 	 * Filters the dbDelta SQL queries for inserting or updating.
@@ -3274,7 +3373,23 @@ function dbDelta( $queries = '', $execute = true ) { // phpcs:ignore WordPress.N
 		unset( $cqueries[ $table ], $for_update[ $table ] );
 	}
 
-	$allqueries = array_merge( $cqueries, $iqueries );
+	foreach ( $vqueries as $view => $qry ) {
+		// Fetch the view column structure from the database.
+		$suppress   = $wpdb->suppress_errors();
+		$viewfields = $wpdb->get_results( "DESCRIBE {$view};" );
+		$wpdb->suppress_errors( $suppress );
+
+		if ( ! $viewfields ) {
+			continue;
+		}
+
+		$vqueries[ $view ] = str_replace( 'CREATE VIEW', 'CREATE OR REPLACE VIEW', $qry );
+
+		// Remove the update log even though it might actually perform one. We don't need to make any transformations for view updates.
+		unset( $for_update[ $view ] );
+	}
+
+	$allqueries = array_merge( $cqueries, $vqueries, $iqueries );
 	if ( $execute ) {
 		foreach ( $allqueries as $query ) {
 			$wpdb->query( $query );

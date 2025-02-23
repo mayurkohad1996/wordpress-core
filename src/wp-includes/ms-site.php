@@ -833,6 +833,7 @@ function wp_uninitialize_site( $site_id ) {
 
 	foreach ( (array) $drop_tables as $table ) {
 		$wpdb->query( "DROP TABLE IF EXISTS `$table`" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( "DROP VIEW IF EXISTS `$table`" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**

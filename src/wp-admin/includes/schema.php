@@ -27,6 +27,8 @@ $charset_collate = $wpdb->get_charset_collate();
  *
  * @since 3.3.0
  *
+ * @TODO need pre-install check that tests for CREATE VIEW privilege
+ *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string $scope   Optional. The tables for which to retrieve SQL. Can be all, global, ms_global, or blog tables. Defaults to all.
@@ -64,24 +66,28 @@ function wp_get_db_schema( $scope = 'all', $blog_id = null ) {
 ) $charset_collate;
 CREATE TABLE $wpdb->terms (
  term_id bigint(20) unsigned NOT NULL auto_increment,
+ term_taxonomy_id bigint(20) unsigned NOT NULL default 0,
  name varchar(200) NOT NULL default '',
  slug varchar(200) NOT NULL default '',
  term_group bigint(10) NOT NULL default 0,
- PRIMARY KEY  (term_id),
- KEY slug (slug($max_index_length)),
- KEY name (name($max_index_length))
-) $charset_collate;
-CREATE TABLE $wpdb->term_taxonomy (
- term_taxonomy_id bigint(20) unsigned NOT NULL auto_increment,
- term_id bigint(20) unsigned NOT NULL default 0,
  taxonomy varchar(32) NOT NULL default '',
  description longtext NOT NULL,
  parent bigint(20) unsigned NOT NULL default 0,
  count bigint(20) NOT NULL default 0,
- PRIMARY KEY  (term_taxonomy_id),
- UNIQUE KEY term_id_taxonomy (term_id,taxonomy),
- KEY taxonomy (taxonomy)
+ PRIMARY KEY  (term_id),
+ KEY taxonomy (taxonomy),
+ KEY slug (slug($max_index_length)),
+ KEY name (name($max_index_length))
 ) $charset_collate;
+CREATE VIEW $wpdb->term_taxonomy
+AS SELECT
+ term_taxonomy_id,
+ term_id,
+ taxonomy,
+ description,
+ parent,
+ count
+FROM $wpdb->terms;
 CREATE TABLE $wpdb->term_relationships (
  object_id bigint(20) unsigned NOT NULL default 0,
  term_taxonomy_id bigint(20) unsigned NOT NULL default 0,
@@ -559,6 +565,9 @@ function populate_options( array $options = array() ) {
 
 		// 6.4.0
 		'wp_attachment_pages_enabled'     => 0,
+
+		// x.y.z
+		'finished_combining_terms_tables' => 1,
 	);
 
 	// 3.3.0
