@@ -11,17 +11,17 @@ on:
     paths:
       - '.github/workflows/upgrade-testing.yml'
       - '.github/workflows/reusable-upgrade-testing.yml'
-  pull_request:
-    # Always test the workflow when changes are suggested.
-    paths:
-      - '.github/workflows/upgrade-testing.yml'
-      - '.github/workflows/reusable-upgrade-testing.yml'
-  workflow_dispatch:
-    inputs:
-      new-version:
-        description: 'The version to test installing. Accepts major and minor versions, "latest", or "nightly". Major releases must not end with ".0".'
-        type: string
-        default: 'latest'
+  # pull_request:
+  #   # Always test the workflow when changes are suggested.
+  #   paths:
+  #     - '.github/workflows/upgrade-testing.yml'
+  #     - '.github/workflows/reusable-upgrade-testing.yml'
+  # workflow_dispatch:
+  #   inputs:
+  #     new-version:
+  #       description: 'The version to test installing. Accepts major and minor versions, "latest", or "nightly". Major releases must not end with ".0".'
+  #       type: string
+  #       default: 'latest'
 
 # Cancels all previous workflow runs for pull requests that have not completed.
 concurrency:
