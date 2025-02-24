@@ -366,26 +366,26 @@ function twentyfourteen_scripts() {
 		wp_enqueue_script( 'jquery-masonry' );
 	}
 
-	if ( is_front_page() && 'slider' === get_theme_mod( 'featured_content_layout' ) ) {
-		wp_enqueue_script(
-			'twentyfourteen-slider',
-			get_template_directory_uri() . '/js/slider.js',
-			array( 'jquery' ),
-			'20150120',
-			array(
-				'in_footer' => false, // Because involves header.
-				'strategy'  => 'defer',
-			)
-		);
-		wp_localize_script(
-			'twentyfourteen-slider',
-			'featuredSliderDefaults',
-			array(
-				'prevText' => __( 'Previous', 'twentyfourteen' ),
-				'nextText' => __( 'Next', 'twentyfourteen' ),
-			)
-		);
-	}
+//	if ( is_front_page() && 'slider' === get_theme_mod( 'featured_content_layout' ) ) {
+//		wp_enqueue_script(
+//			'twentyfourteen-slider',
+//			get_template_directory_uri() . '/js/slider.js',
+//			array( 'jquery' ),
+//			'20150120',
+//			array(
+//				'in_footer' => false, // Because involves header.
+//				'strategy'  => 'defer',
+//			)
+//		);
+//		wp_localize_script(
+//			'twentyfourteen-slider',
+//			'featuredSliderDefaults',
+//			array(
+//				'prevText' => __( 'Previous', 'twentyfourteen' ),
+//				'nextText' => __( 'Next', 'twentyfourteen' ),
+//			)
+//		);
+//	}
 
 	wp_enqueue_script(
 		'twentyfourteen-script',

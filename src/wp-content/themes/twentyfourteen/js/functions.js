@@ -174,11 +174,11 @@
 		}
 
 		// Initialize Featured Content slider.
-		if ( body.is( '.slider' ) ) {
-			$( '.featured-content' ).featuredslider( {
-				selector: '.featured-content-inner > article',
-				controlsContainer: '.featured-content'
-			} );
-		}
+		// if (body.is('.slider')) {
+		// 	$('.featured-content').featuredslider({
+		// 		selector: '.featured-content-inner > article',
+		// 		controlsContainer: '.featured-content'
+		// 	});
+		// }
 	} );
 } )( jQuery );
