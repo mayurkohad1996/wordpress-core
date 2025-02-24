@@ -10834,7 +10834,14 @@ mockedApiResponse.Schema = {
                     "methods": [
                         "GET"
                     ],
-                    "args": []
+                    "args": {
+                        "context": {
+                            "description": "Scope under which the request is made; determines fields present in response.",
+                            "type": "string",
+                            "default": "view",
+                            "required": false
+                        }
+                    }
                 },
                 {
                     "methods": [
