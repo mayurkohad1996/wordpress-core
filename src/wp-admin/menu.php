@@ -212,7 +212,7 @@ if ( wp_is_block_theme() ) {
 	$submenu['themes.php'][6] = array( _x( 'Editor', 'site editor menu item' ), 'edit_theme_options', 'site-editor.php' );
 } else {
 	if ( current_theme_supports( 'stylebook' ) ) {
-		$submenu['themes.php'][6] = array( _x( 'Design', 'patterns and stylebook menu item' ), 'edit_theme_options', 'site-editor.php' );
+		$submenu['themes.php'][6] = array( _x( 'Design', 'design menu item' ), 'edit_theme_options', 'site-editor.php' );
 	} else {
 		$submenu['themes.php'][6] = array( _x( 'Patterns', 'patterns menu item' ), 'edit_theme_options', 'site-editor.php?p=pattern' );
 	}
