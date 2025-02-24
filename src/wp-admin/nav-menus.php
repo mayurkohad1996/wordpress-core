@@ -879,8 +879,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 							<div class="locations-row-links">
 								<?php if ( isset( $menu_locations[ $_location ] ) && 0 !== $menu_locations[ $_location ] ) : ?>
 								<span class="locations-edit-menu-link">
-									<a href="
-									<?php
+									<a href="<?php
 									echo esc_url(
 										add_query_arg(
 											array(
@@ -890,8 +889,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 											admin_url( 'nav-menus.php' )
 										)
 									);
-									?>
-									">
+									?>">
 										<span aria-hidden="true"><?php _ex( 'Edit', 'menu' ); ?></span><span class="screen-reader-text">
 											<?php
 											/* translators: Hidden accessibility text. */
@@ -902,8 +900,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 								</span>
 								<?php endif; ?>
 								<span class="locations-add-menu-link">
-									<a href="
-									<?php
+									<a href="<?php
 									echo esc_url(
 										add_query_arg(
 											array(
@@ -914,8 +911,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 											admin_url( 'nav-menus.php' )
 										)
 									);
-									?>
-									">
+									?>">
 										<?php _ex( 'Use new menu', 'menu' ); ?>
 									</a>
 								</span>
@@ -1245,8 +1241,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 								</span><!-- END .cancel-action -->
 								<?php else : ?>
 								<span class="delete-action">
-									<a class="submitdelete deletion menu-delete" href="
-									<?php
+									<a class="submitdelete deletion menu-delete" href="<?php
 									echo esc_url(
 										wp_nonce_url(
 											add_query_arg(
@@ -1259,8 +1254,9 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 											'delete-nav_menu-' . $nav_menu_selected_id
 										)
 									);
-									?>
-									"><?php _e( 'Delete Menu' ); ?></a>
+									?>">
+										<?php _e( 'Delete Menu' ); ?>
+									</a>
 								</span><!-- END .delete-action -->
 								<?php endif; ?>
 
