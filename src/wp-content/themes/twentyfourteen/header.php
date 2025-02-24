@@ -33,6 +33,12 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <div id="page" class="hfeed site">
+	<a class="screen-reader-text skip-link" href="#content">
+		<?php
+		/* translators: Hidden accessibility text. */
+		_e( 'Skip to content', 'twentyfourteen' );
+		?>
+	</a>
 	<?php if ( get_header_image() ) : ?>
 	<div id="site-header">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
@@ -56,12 +62,6 @@
 
 			<nav id="primary-navigation" class="site-navigation primary-navigation">
 				<button class="menu-toggle"><?php _e( 'Primary Menu', 'twentyfourteen' ); ?></button>
-				<a class="screen-reader-text skip-link" href="#content">
-					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'Skip to content', 'twentyfourteen' );
-					?>
-				</a>
 				<?php
 				wp_nav_menu(
 					array(
