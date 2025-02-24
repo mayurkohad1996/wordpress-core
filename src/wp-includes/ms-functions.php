@@ -2423,7 +2423,7 @@ Thanks!
  * @param bool $force
  * @return bool True if forced, false if not forced.
  */
-function force_ssl_content( $force = '' ) {
+function force_ssl_content( $force = false ) {
 	static $forced_content = false;
 
 	if ( ! $force ) {
