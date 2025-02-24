@@ -1605,8 +1605,8 @@ themes.view.InstallerSearch =  themes.view.Search.extend({
 		$( 'body' ).removeClass( 'show-filters filters-applied show-favorites-form' );
 		$( '.drawer-toggle' ).attr( 'aria-expanded', 'false' );
 
-		// Get the themes by sending Ajax POST request to api.wordpress.org/themes
-		// or searching the local cache.
+		// Get the themes by sending Ajax POST request to the `/themes` endpoint of
+		// the WordPress API, or searching the local cache.
 		this.collection.query( request );
 
 		// Set route.
@@ -1696,8 +1696,8 @@ themes.view.Installer = themes.view.Appearance.extend({
 		// Create a new collection with the proper theme data
 		// for each section.
 		if ( 'block-themes' === section ) {
-			// Get the themes by sending Ajax POST request to api.wordpress.org/themes
-			// or searching the local cache.
+			// Get the themes by sending Ajax POST request to the `/themes` endpoint
+			// of the WordPress API, or searching the local cache.
 			this.collection.query( { tag: 'full-site-editing' } );
 		} else {
 			this.collection.query( { browse: section } );
@@ -1775,8 +1775,8 @@ themes.view.Installer = themes.view.Appearance.extend({
 		filter = _.union( [ filter, this.filtersChecked() ] );
 		request = { tag: [ filter ] };
 
-		// Get the themes by sending Ajax POST request to api.wordpress.org/themes
-		// or searching the local cache.
+		// Get the themes by sending Ajax POST request to the `/themes` endpoint
+		// of the WordPress API, or searching the local cache.
 		this.collection.query( request );
 	},
 
@@ -1813,8 +1813,8 @@ themes.view.Installer = themes.view.Appearance.extend({
 			filteringBy.append( '<span class="tag">' + name + '</span>' );
 		});
 
-		// Get the themes by sending Ajax POST request to api.wordpress.org/themes
-		// or searching the local cache.
+		// Get the themes by sending Ajax POST request to the `/themes` endpoint
+		// of the WordPress API, or searching the local cache.
 		this.collection.query( request );
 	},
 
@@ -1840,8 +1840,8 @@ themes.view.Installer = themes.view.Appearance.extend({
 				username: username
 			},
 			success: function () {
-				// Get the themes by sending Ajax POST request to api.wordpress.org/themes
-				// or searching the local cache.
+				// Get the themes by sending Ajax POST request to the `/themes` endpoint
+				// of the WordPress API, or searching the local cache.
 				that.collection.query( request );
 			}
 		} );
