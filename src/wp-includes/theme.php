@@ -2934,6 +2934,29 @@ function add_theme_support( $feature, ...$args ) {
 
 				return false;
 			}
+
+		case 'view-transitions':
+			$defaults = array(
+				'post-selector'           => '.wp-block-post.post, article.post, body.single main',
+				'global-transition-names' => array(
+					'header' => 'header',
+				),
+				'post-transition-names'   => array(
+					'post-title'     => '.wp-block-post-title, .entry-title',
+					'post-thumbnail' => '.wp-post-image',
+				),
+			);
+			if ( true === $args ) {
+				$args = $defaults;
+			} else {
+				$args = wp_parse_args( $args, $defaults );
+				if ( ! is_array( $args['global-transition-names'] ) ) {
+					$args['global-transition-names'] = array();
+				}
+				if ( ! is_array( $args['post-transition-names'] ) ) {
+					$args['post-transition-names'] = array();
+				}
+			}
 	}
 
 	$_wp_theme_features[ $feature ] = $args;
@@ -4394,6 +4417,9 @@ function _add_default_theme_supports() {
 	add_theme_support( 'html5', array( 'comment-form', 'comment-list', 'search-form', 'gallery', 'caption', 'style', 'script' ) );
 	add_theme_support( 'automatic-feed-links' );
 
+	// Block themes can always support view transitions with the default configuration.
+	add_theme_support( 'view-transitions' );
+
 	add_filter( 'should_load_separate_core_block_assets', '__return_true' );
 	add_filter( 'should_load_block_assets_on_demand', '__return_true' );
 
@@ -4415,4 +4441,45 @@ function _add_default_theme_supports() {
 		10,
 		2
 	);
+}
+
+/**
+ * Loads view transitions for the current theme, if configured.
+ *
+ * @since 6.9.0
+ */
+function wp_load_view_transitions() {
+	if ( ! current_theme_supports( 'view-transitions' ) ) {
+		return;
+	}
+
+	$stylesheet = '@view-transition { navigation: auto; }';
+
+	// Use an inline style to avoid an extra request, also because it's just 1 line of CSS.
+	wp_register_style( 'wp-view-transitions', false, array(), null );
+	wp_add_inline_style( 'wp-view-transitions', $stylesheet );
+	wp_enqueue_style( 'wp-view-transitions' );
+
+	$theme_support = get_theme_support( 'view-transitions' );
+
+	// No point in loading the script if no specific view transition names are configured.
+	if ( ! $theme_support['global-transition-names'] && ! $theme_support['post-transition-names'] ) {
+		return;
+	}
+
+	$config = array(
+		'postSelector'          => $theme_support['post-selector'],
+		'globalTransitionNames' => $theme_support['global-transition-names'],
+		'postTransitionNames'   => $theme_support['post-transition-names'],
+	);
+	$script = file_get_contents( ABSPATH . WPINC . '/view-transitions.js' );
+	$script = str_replace( '{ __PLACEHOLDER__: true }', wp_json_encode( $config, JSON_FORCE_OBJECT ), $script );
+
+	/*
+	 * This must be in the <head>, not in the footer.
+	 * An inline script is used to avoid an extra request.
+	 */
+	wp_register_script( 'wp-view-transitions', false, array(), null, array() );
+	wp_add_inline_script( 'wp-view-transitions', $script );
+	wp_enqueue_script( 'wp-view-transitions' );
 }
