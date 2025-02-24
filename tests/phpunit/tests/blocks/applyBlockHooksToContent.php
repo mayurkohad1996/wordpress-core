@@ -29,6 +29,15 @@ class Tests_Blocks_ApplyBlockHooksToContent extends WP_UnitTestCase {
 		);
 
 		register_block_type(
+			'tests/hooked-block-as-last-child',
+			array(
+				'block_hooks' => array(
+					'tests/anchor-block-for-child-insertion' => 'last_child',
+				),
+			)
+		);
+
+		register_block_type(
 			'tests/hooked-block-with-multiple-false',
 			array(
 				'block_hooks' => array(
@@ -59,6 +68,7 @@ class Tests_Blocks_ApplyBlockHooksToContent extends WP_UnitTestCase {
 		$registry = WP_Block_Type_Registry::get_instance();
 
 		$registry->unregister( 'tests/hooked-block' );
+		$registry->unregister( 'tests/hooked-block-as-last-child' );
 		$registry->unregister( 'tests/hooked-block-with-multiple-false' );
 		$registry->unregister( 'tests/dynamically-hooked-block-with-multiple-false' );
 	}
@@ -87,6 +97,36 @@ class Tests_Blocks_ApplyBlockHooksToContent extends WP_UnitTestCase {
 		$actual = apply_block_hooks_to_content( $context->content, $context, 'insert_hooked_blocks' );
 		$this->assertSame(
 			'<!-- wp:tests/anchor-block /--><!-- wp:tests/hooked-block /-->',
+			$actual
+		);
+	}
+
+	public function test_apply_block_hooks_to_content_inserts_hooked_block_as_last_child_if_sibling_is_present() {
+		$block_opener  = '<!-- wp:tests/anchor-block-for-child-insertion -->';
+		$block_closer  = '<!-- /wp:tests/anchor-block-for-child-insertion -->';
+		$sibling_block = '<!-- wp:tests/sibling /-->';
+
+		$context          = new WP_Block_Template();
+		$context->content = $block_opener . $sibling_block . $block_closer;
+
+		$actual = apply_block_hooks_to_content( $context->content, $context, 'insert_hooked_blocks' );
+		$this->assertSame(
+			$block_opener . $sibling_block . '<!-- wp:tests/hooked-block-as-last-child /-->' . $block_closer,
+			$actual
+		);
+	}
+
+	public function test_apply_block_hooks_to_content_inserts_hooked_block_as_last_child_if_sibling_is_classic_block() {
+		$block_opener  = '<!-- wp:tests/anchor-block-for-child-insertion -->';
+		$block_closer  = '<!-- /wp:tests/anchor-block-for-child-insertion -->';
+		$sibling_block = '<h2>Hello World!</h2>';
+
+		$context          = new WP_Block_Template();
+		$context->content = $block_opener . $sibling_block . $block_closer;
+
+		$actual = apply_block_hooks_to_content( $context->content, $context, 'insert_hooked_blocks' );
+		$this->assertSame(
+			$block_opener . $sibling_block . '<!-- wp:tests/hooked-block-as-last-child /-->' . $block_closer,
 			$actual
 		);
 	}
