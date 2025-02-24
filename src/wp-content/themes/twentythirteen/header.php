@@ -22,6 +22,12 @@
 <body <?php body_class(); ?>>
 	<?php wp_body_open(); ?>
 	<div id="page" class="hfeed site">
+		<a class="screen-reader-text skip-link" href="#content">
+			<?php
+			/* translators: Hidden accessibility text. */
+			_e( 'Skip to content', 'twentythirteen' );
+			?>
+		</a>
 		<header id="masthead" class="site-header">
 			<a class="home-link" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
 				<h1 class="site-title"><?php bloginfo( 'name' ); ?></h1>
@@ -31,12 +37,6 @@
 			<div id="navbar" class="navbar">
 				<nav id="site-navigation" class="navigation main-navigation">
 					<button class="menu-toggle"><?php _e( 'Menu', 'twentythirteen' ); ?></button>
-					<a class="screen-reader-text skip-link" href="#content">
-						<?php
-						/* translators: Hidden accessibility text. */
-						_e( 'Skip to content', 'twentythirteen' );
-						?>
-					</a>
 					<?php
 					wp_nav_menu(
 						array(
