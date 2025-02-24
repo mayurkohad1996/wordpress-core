@@ -64,58 +64,6 @@ if ( ! function_exists( 'twentytwentyfive_enqueue_styles' ) ) :
 endif;
 add_action( 'wp_enqueue_scripts', 'twentytwentyfive_enqueue_styles' );
 
-if ( ! function_exists( 'twentytwentyfive_get_theme_style_css' ) ) :
-	/**
-	 * Gets the CSS from the theme stylesheet without comments.
-	 *
-	 * @since Twenty Twenty-Five n.e.x.t
-	 *
-	 * @return string
-	 */
-	function twentytwentyfive_get_theme_style_css(): string {
-		static $css = null;
-		if ( null !== $css ) {
-			return $css;
-		}
-		$css = file_get_contents( get_parent_theme_file_path( 'style.css' ) ); // 2,505 bytes before minification
-		if ( ! SCRIPT_DEBUG ) {
-			// Strip out CSS comments, collapse whitespace, and remove unneeded spaces in this specific CSS file.
-			// This works for TT5's theme CSS, but it is not a complete solution applicable to any stylesheet.
-			// For a general solution, a proper CSS tokenizer should be used. Alternatively, the CSS should go a build step so that there is a style.min.css minified version available!
-			$css = trim( preg_replace( '#/\*.*?\*/\s*#s', '', $css ) );
-			$css = preg_replace( '/\s+/', ' ', $css );
-			$css = preg_replace( '/(?<=[{};:,+]) | (?=[{};:,!+])/', '', $css );
-			$css = str_replace( ';}', '}', $css );
-			// 586 bytes after minification
-		}
-		return $css;
-	}
-
-	add_filter(
-		'pre_wp_filesize',
-		static function ( $size, $path ) {
-			if ( get_parent_theme_file_path( 'style.css' ) === $path ) {
-				$size = strlen( twentytwentyfive_get_theme_style_css() );
-			}
-			return $size;
-		},
-		10,
-		2
-	);
-
-	add_action(
-		'wp_head',
-		static function () {
-			$style = wp_styles()->query( 'twentytwentyfive-style' );
-
-			if ( $style && $style->src === false ) {
-				$style->extra['after'][0] = twentytwentyfive_get_theme_style_css();
-			}
-		},
-		2
-	);
-endif;
-
 // Registers custom block styles.
 if ( ! function_exists( 'twentytwentyfive_block_styles' ) ) :
 	/**
