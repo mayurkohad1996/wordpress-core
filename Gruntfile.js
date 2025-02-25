@@ -545,7 +545,9 @@ module.exports = function(grunt) {
 					'wp-admin/css/*.css',
 					'!wp-admin/css/wp-admin*.css',
 					'wp-includes/css/*.css',
-					'wp-includes/js/mediaelement/wp-mediaelement.css'
+					'wp-includes/js/mediaelement/wp-mediaelement.css',
+					'wp-content/themes/twentytwentytwo/style.css',
+					'wp-content/themes/twentytwentyfive/style.css'
 				]
 			},
 			rtl: {
