@@ -7383,6 +7383,11 @@ function wp_is_stream( $path ) {
  * @return bool True if valid date, false if not valid date.
  */
 function wp_checkdate( $month, $day, $year, $source_date ) {
+
+	$checkdate = false;
+    if ( is_numeric( $month ) && is_numeric( $day ) && is_numeric( $year ) ) {
+             $checkdate = checkdate( intval( $month ), intval( $day ), intval( $year ) );
+     }
 	/**
 	 * Filters whether the given date is valid for the Gregorian calendar.
 	 *
@@ -7391,7 +7396,7 @@ function wp_checkdate( $month, $day, $year, $source_date ) {
 	 * @param bool   $checkdate   Whether the given date is valid.
 	 * @param string $source_date Date to check.
 	 */
-	return apply_filters( 'wp_checkdate', checkdate( $month, $day, $year ), $source_date );
+	return apply_filters( 'wp_checkdate', $checkdate, $source_date );
 }
 
 /**
